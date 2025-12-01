@@ -70,7 +70,7 @@ android {
     defaultConfig {
         buildConfigField("String", "buildKPV", "\"$kernelPatchVersion\"")
 
-        base.archivesName = "APatch_${managerVersionCode}_${managerVersionName}_on_${branchname}"
+        base.archivesName = "FolkPatch_${managerVersionCode}_${managerVersionName}_on_${branchname}"
     }
 
     compileOptions {

@@ -94,6 +94,10 @@ import me.bmax.apatch.util.toggleModule
 import me.bmax.apatch.util.ui.LocalSnackbarHost
 import me.bmax.apatch.util.uninstallModule
 
+import com.ramcosta.composedestinations.generated.destinations.OnlineModuleScreenDestination
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Download
+
 @Destination<RootGraph>
 @Composable
 fun APModuleScreen(navigator: DestinationsNavigator) {
@@ -138,7 +142,7 @@ fun APModuleScreen(navigator: DestinationsNavigator) {
 
     Scaffold(
         topBar = {
-        TopBar()
+        TopBar(navigator)
     }, floatingActionButton = if (hideInstallButton) {
         { /* Empty */ }
     } else {
@@ -443,8 +447,20 @@ private fun ModuleList(
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-private fun TopBar() {
-    TopAppBar(title = { Text(stringResource(R.string.apm)) })
+private fun TopBar(navigator: DestinationsNavigator) {
+    TopAppBar(
+        title = { Text(stringResource(R.string.apm)) },
+        actions = {
+            androidx.compose.material3.IconButton(onClick = {
+                navigator.navigate(OnlineModuleScreenDestination)
+            }) {
+                Icon(
+                    imageVector = Icons.Filled.Download,
+                    contentDescription = "Online Modules"
+                )
+            }
+        }
+    )
 }
 
 @Composable
