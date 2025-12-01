@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name" translatable="false">APatch Ultra</string>
+    <string name="app_name" translatable="false">FolkPatch</string>
     <string name="android_patch">Android 修補</string>
     <string name="patch_warnning">安裝過程存在風險。請確保你的資料已備份。</string>
     <string name="reboot_download">重新啟動至 Download</string>
@@ -50,7 +50,6 @@
     <string name="home_click_to_install">點擊以開始安裝</string>
     <string name="home_selinux_status_unknown">未知</string>
     <string name="home_selinux_status_permissive">允許執行</string>
-
     <string name="home_selinux_status">SELinux 狀態</string>
     <string name="apm_changelog">《更新紀錄》</string>
     <string name="apm_uninstall_failed">無法解除安裝 %s</string>
@@ -60,12 +59,10 @@
     <string name="su_hide_system_apps">隱藏系統應用程式</string>
     <string name="apm_magisk_conflict">與 Magisk 發生衝突，你無法使用模組功能!</string>
     <string name="apm_desc">說明</string>
-
     <string name="kpm_load_toast_failed">匯入失敗</string>
     <string name="kpm_unload">刪除</string>
     <string name="home_selinux_status_disabled">關閉</string>
     <string name="apm_new_version_available">點擊以安裝新版本的 %s。</string>
-
     <string name="home_working">運作中 😋</string>
     <string name="apm_empty">尚未安裝模組</string>
     <string name="kpm_load">匯入</string>
@@ -100,7 +97,7 @@
     <string name="settings_global_namespace_mode_summary">所有 Root 工作階段將會全域掛載命名空間</string>
     <string name="settings_global_namespace_mode">全域命名空間模式</string>
     <string name="settings_clear_super_key_dialog">你確定要繼續嗎？</string>
-    <string name="kpatch_version_update">版本：%s -&gt; %s</string>
+    <string name="kpatch_version_update" formatted="false">版本：%s -&gt; %s</string>
     <string name="kpatch_shadow_path_title">kpatch</string>
     <string name="home_kpatch_info_title">資訊</string>
     <string name="home_ap_cando_reboot">重新啟動</string>
@@ -144,7 +141,6 @@
     <string name="setting_reset_su_new_path">新的完整路徑</string>
     <string name="success">成功</string>
     <string name="failure">失敗</string>
-
     <string name="mode_select_page_patch_and_install">修補並安裝</string>
     <string name="mode_select_page_install_inactive_slot">安裝到非活動插槽（OTA 之後）</string>
     <string name="mode_select_page_select_file">選擇要修補的「boot image」</string>
@@ -155,14 +151,12 @@
     <string name="mode_select_page_install_inactive_slot_warning">重新啟動後，您的裝置將**強制**啟動到目前非活動插槽！
 \n僅在 OTA 完成之後使用此選項。
 \n繼續？</string>
-
     <string name="apm_webui_open">打開網頁介面</string>
     <string name="enable_web_debugging_summary">可用於偵錯WebUI，請僅在需要時啟用。</string>
     <string name="settings_donot_store_superkey">停用本機儲存密鑰</string>
     <string name="home_dialog_auth_fail_content">無法驗證超級密鑰，因此 APatch 無法正常運作。 \n以下是驗證失敗的一些可能原因： \n1. 您尚未使用 KernelPatch 程式修補啟動映像檔。 \n2. 修補後的啟動映像檔未刷入裝置。 \n3. 超級密鑰錯誤。 \n4. 您的裝置不支援 APatch 和 KernelPatch。 \n \n請檢查並再次嘗試。如果仍存在問題，您隨時可以在官方存放庫的議題頁面上提問。</string>
     <string name="home_install_unknown_summary">點擊以安裝</string>
     <string name="home_device_info">裝置</string>
-
     <string name="mode_select_page_title">安裝</string>
     <string name="home_dialog_uninstall_title">解除安裝</string>
     <string name="home_dialog_uninstall_ap_only">僅刪除 AndroidPatch</string>
@@ -198,37 +192,54 @@
     <string name="light_green_theme">淺綠色主題</string>
     <string name="lime_theme">檸檬色主題</string>
     <string name="orange_theme">橙色主題</string>
+    <!-- 補充缺失字串 -->
+    <string name="save_log">儲存日誌</string>
+    <string name="log_saved">日誌已儲存</string>
+    <string name="apm_action">操作</string>
+    <string name="kpm_control_dialog_title">控制 KP模組</string>
+    <string name="blue_theme">藍色主題</string>
     <string name="pink_theme">粉紅色主題</string>
     <string name="purple_theme">紫色主題</string>
     <string name="red_theme">紅色主題</string>
     <string name="sakura_theme">櫻花色主題</string>
     <string name="teal_theme">青綠色主題</string>
-    <string name="about_app_version">版本 %1$s</string>
-    <string name="about_telegram_channel">Telegram 頻道</string>
-    <string name="blue_theme">藍色主題</string>
     <string name="yellow_theme">黃色主題</string>
-    <string name="kpm_control_dialog_title">控制 KPModule</string>
-    <string name="save_log">儲存日誌</string>
-    <string name="log_saved">日誌已儲存</string>
-    <string name="crash_handle_title">應用程式崩潰..</string>
-    <string name="crash_handle_copy">複製崩潰日誌</string>
-    <string name="apm_action">執行</string>
-    <string name="crash_handle_copied">已將崩潰日誌複製到剪貼簿。</string>
-    <string name="settings_force_overlayfs_mode">強制使用 OverlayFS</string>
+    <!-- Online Module Strings -->
+    <string name="online_module_title">線上模組</string>
+    <string name="online_module_download_start">開始下載：%s</string>
+    <string name="online_module_download_complete">下載完成：%s</string>
+    <string name="online_module_download_notification">正在下載 %s。請查看通知欄取得下載進度，下載檔案位於Download資料夾中。</string>
 
-    <!-- Custom Background Settings -->
+    <!-- Crash Handle Strings -->
+    <string name="crash_handle_title">崩潰報告</string>
+    <string name="crash_handle_copy">複製</string>
+
+    <!-- About Screen Strings -->
+    <string name="about_app_version">應用程式版本</string>
+    <string name="about_github">GitHub</string>
+    <string name="about_telegram_channel">Telegram 頻道</string>
+
+    <!-- App Title Strings -->
+    <string name="app_title_fpatch">FPatch</string>
+    <string name="app_title_apatch_fold">APatch Fold</string>
+    <string name="app_title_apatchx">APatchX</string>
+    <string name="app_title_apatch">APatch</string>
+    <string name="app_title_foldpatch">FoldPatch</string>
+
+    <!-- Settings Strings -->
+    <string name="settings_lite_mode">簡易模式</string>
+    <string name="settings_lite_mode_mode_summary">啟用簡易模式以獲得更好的效能</string>
+    <string name="settings_force_overlayfs_mode">強制 OverlayFS 模式</string>
+    <string name="settings_force_overlayfs_mode_summary">強制使用 OverlayFS 模組功能</string>
+    <string name="settings_app_title">應用程式標題</string>
     <string name="settings_custom_background">自訂背景</string>
-    <string name="settings_custom_background_summary">為應用程式設定自訂背景圖片</string>
-    <string name="settings_custom_background_enabled">啟用自訂背景</string>
-    <string name="settings_custom_background_disabled">停用自訂背景</string>
+    <string name="settings_custom_background_enabled">已啟用自訂背景</string>
     <string name="settings_select_background_image">選擇背景圖片</string>
-    <string name="settings_clear_background">清除背景</string>
-    <string name="settings_clear_background_image">清除背景圖片</string>
-    <string name="settings_clear_background_confirm">確認要清除背景圖片嗎？</string>
-    <string name="settings_background_image_saved">背景圖片已儲存</string>
-    <string name="settings_custom_background_saved">自訂背景已儲存</string>
-    <string name="settings_custom_background_error">儲存自訂背景失敗</string>
-    <string name="settings_background_selected">已選擇背景</string>
+    <string name="settings_custom_background_summary">設定自訂背景圖片</string>
+    <string name="settings_custom_background_saved">背景儲存成功</string>
+    <string name="settings_custom_background_error">背景儲存失敗</string>
+    <string name="settings_background_selected">背景已選擇</string>
     <string name="settings_background_image_cleared">背景圖片已清除</string>
-    <string name="settings_background_image_error">背景圖片處理錯誤</string>
+    <string name="settings_clear_background">清除背景</string>
+    <string name="settings_clear_background_confirm">確定要清除背景圖片嗎？</string>
 </resources>

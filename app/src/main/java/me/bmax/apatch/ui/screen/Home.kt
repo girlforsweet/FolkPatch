@@ -380,9 +380,18 @@ private fun TopBar(
     val uriHandler = LocalUriHandler.current
     var showDropdownMoreOptions by remember { mutableStateOf(false) }
     var showDropdownReboot by remember { mutableStateOf(false) }
+    val prefs = APApplication.sharedPreferences
+    val currentTitle = prefs.getString("app_title", "foldpatch") ?: "foldpatch"
+    val titleResId = when (currentTitle) {
+        "fpatch" -> R.string.app_title_fpatch
+        "apatch_fold" -> R.string.app_title_apatch_fold
+        "apatchx" -> R.string.app_title_apatchx
+        "apatch" -> R.string.app_title_apatch
+        else -> R.string.app_title_foldpatch
+    }
 
     TopAppBar(title = {
-        Text(stringResource(R.string.app_name))
+        Text(stringResource(titleResId))
     }, actions = {
         IconButton(onClick = onInstallClick) {
             Icon(
@@ -428,7 +437,7 @@ private fun TopBar(
                             Text(stringResource(R.string.home_more_menu_feedback_or_suggestion))
                         }, onClick = {
                             showDropdownMoreOptions = false
-                            uriHandler.openUri("https://github.com/matsuzaka-yuki/APatch-Ultra/issues/new/choose")
+                            uriHandler.openUri("https://github.com/matsuzaka-yuki/FolkPatch/issues/new/choose")
                         })
                         DropdownMenuItem(text = {
                             Text(stringResource(R.string.home_more_menu_about))

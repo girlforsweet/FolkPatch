@@ -1,17 +1,17 @@
 <div align="center">
-<a href="https://github.com/matsuzaka-yuki/APatch-Ultra/releases/latest"><img src="logo.png" style="width: 128px;" alt="logo"></a>
+<a href="https://github.com/matsuzaka-yuki/FolkPatch/releases/latest"><img src="logo.png" style="width: 128px;" alt="logo"></a>
 
-<h1 align="center">APatch Ultra</h1>
+<h1 align="center">FolkPatch</h1>
 
-[![Latest Release](https://img.shields.io/github/v/release/matsuzaka-yuki/APatch-Ultra?label=Release&logo=github)](https://github.com/matsuzaka-yuki/APatch-Ultra/releases/latest)
-[![Channel](https://img.shields.io/badge/Follow-Telegram-blue.svg?logo=telegram)](https://t.me/APatchUltra)
-[![GitHub License](https://img.shields.io/github/license/matsuzaka-yuki/APatch-Ultra?logo=gnu)](/LICENSE)
+[![Latest Release](https://img.shields.io/github/v/release/matsuzaka-yuki/FolkPatch?label=Release&logo=github)](https://github.com/matsuzaka-yuki/FolkPatch/releases/latest)
+[![Channel](https://img.shields.io/badge/Follow-Telegram-blue.svg?logo=telegram)](https://t.me/FolkPatch)
+[![GitHub License](https://img.shields.io/github/license/matsuzaka-yuki/FolkPatch?logo=gnu)](/LICENSE)
 
 </div>
 
 **Language / 语言:** [English](README_EN.md) | [中文](README.md)
 
-**APatch Ultra** is an extended non-parallel branch based on [APatch](https://github.com/bmax121/APatch), only through optimizing the interface design and extending the features, without introducing new core functions.
+**FolkPatch** is an extended non-parallel branch based on [APatch](https://github.com/bmax121/APatch), only through optimizing the interface design and extending the features, without introducing new core functions.
 
 ## Key Features
 
@@ -23,7 +23,7 @@
 
 ## Download & Install
 
-Download the latest APK from the [Releases Section](https://github.com/matsuzaka-yuki/APatch-Ultra/releases/latest).
+Download the latest APK from the [Releases Section](https://github.com/matsuzaka-yuki/FolkPatch/releases/latest).
 
 ## System Requirements
 
@@ -40,7 +40,7 @@ This project is based on the following open source projects:
 
 ## License
 
-APatch Ultra is licensed under the GNU General Public License v3 [GPL-3](http://www.gnu.org/copyleft/gpl.html).
+FolkPatch is licensed under the GNU General Public License v3 [GPL-3](http://www.gnu.org/copyleft/gpl.html).
 
 ## Original Project Community
 

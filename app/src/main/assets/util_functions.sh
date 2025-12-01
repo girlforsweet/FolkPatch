@@ -3,7 +3,7 @@
 # Helper Functions (credits to topjohnwu)
 #######################################################################################
 APATCH_VER='0.10.4'
-APATCH_VER_CODE=164
+APATCH_VER_CODE=12146
 
 ui_print() {
   if $BOOTMODE; then

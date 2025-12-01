@@ -41,6 +41,7 @@ import androidx.compose.material.icons.filled.Key
 import androidx.compose.material.icons.filled.RemoveFromQueue
 import androidx.compose.material.icons.filled.Save
 import androidx.compose.material.icons.filled.Share
+import androidx.compose.material.icons.filled.Label
 import androidx.compose.material.icons.filled.Translate
 
 import androidx.compose.ui.res.painterResource
@@ -177,6 +178,11 @@ fun SettingScreen() {
         val showThemeChooseDialog = remember { mutableStateOf(false) }
         if (showThemeChooseDialog.value) {
             ThemeChooseDialog(showThemeChooseDialog)
+        }
+
+        val showAppTitleDialog = remember { mutableStateOf(false) }
+        if (showAppTitleDialog.value) {
+            AppTitleChooseDialog(showAppTitleDialog)
         }
 
         var showLogBottomSheet by remember { mutableStateOf(false) }
@@ -413,6 +419,20 @@ fun SettingScreen() {
                     )
                 }, leadingContent = { Icon(Icons.Filled.FormatColorFill, null) })
             }
+
+            // App Title Settings
+            ListItem(headlineContent = {
+                Text(text = stringResource(id = R.string.settings_app_title))
+            }, modifier = Modifier.clickable {
+                showAppTitleDialog.value = true
+            }, supportingContent = {
+                val currentTitle = prefs.getString("app_title", "foldpatch")
+                Text(
+                    text = stringResource(appTitleNameToString(currentTitle.toString())),
+                    style = MaterialTheme.typography.bodyMedium,
+                    color = MaterialTheme.colorScheme.outline
+                )
+            }, leadingContent = { Icon(Icons.Filled.Label, null) })
 
             // Custom Background Settings
             var isCustomBackgroundEnabled by rememberSaveable {
@@ -842,6 +862,61 @@ fun ResetSUPathDialog(showDialog: MutableState<Boolean>) {
             APDialogBlurBehindUtils.setupWindowBlurListener(dialogWindowProvider.window)
         }
     }
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun AppTitleChooseDialog(showDialog: MutableState<Boolean>) {
+    val prefs = APApplication.sharedPreferences
+
+    BasicAlertDialog(
+        onDismissRequest = { showDialog.value = false }, properties = DialogProperties(
+            decorFitsSystemWindows = true,
+            usePlatformDefaultWidth = false,
+        )
+    ) {
+        Surface(
+            modifier = Modifier
+                .width(310.dp)
+                .wrapContentHeight(),
+            shape = RoundedCornerShape(30.dp),
+            tonalElevation = AlertDialogDefaults.TonalElevation,
+            color = AlertDialogDefaults.containerColor,
+        ) {
+            LazyColumn {
+                items(appTitleList()) { title ->
+                    ListItem(
+                        headlineContent = { Text(text = stringResource(title.nameId)) },
+                        modifier = Modifier.clickable {
+                            showDialog.value = false
+                            prefs.edit { putString("app_title", title.name) }
+                        })
+                }
+            }
+
+            val dialogWindowProvider = LocalView.current.parent as DialogWindowProvider
+            APDialogBlurBehindUtils.setupWindowBlurListener(dialogWindowProvider.window)
+        }
+    }
+}
+
+private data class AppTitle(
+    val name: String, @param:StringRes val nameId: Int
+)
+
+private fun appTitleList(): List<AppTitle> {
+    return listOf(
+        AppTitle("foldpatch", R.string.app_title_foldpatch),
+        AppTitle("fpatch", R.string.app_title_fpatch),
+        AppTitle("apatch_fold", R.string.app_title_apatch_fold),
+        AppTitle("apatchx", R.string.app_title_apatchx),
+        AppTitle("apatch", R.string.app_title_apatch),
+    )
+}
+
+@Composable
+private fun appTitleNameToString(titleName: String): Int {
+    return appTitleList().find { it.name == titleName }?.nameId ?: R.string.app_title_foldpatch
 }
 
 
