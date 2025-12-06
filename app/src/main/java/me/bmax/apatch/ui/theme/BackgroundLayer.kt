@@ -59,14 +59,7 @@ fun BackgroundLayer(
             Box(
                 modifier = Modifier
                     .fillMaxSize()
-                    .background(
-                        Brush.verticalGradient(
-                            colors = listOf(
-                                Color.Black.copy(alpha = 0.4f),
-                                Color.Black.copy(alpha = 0.2f)
-                            )
-                        )
-                    )
+                    .background(Color.Black.copy(alpha = BackgroundConfig.customBackgroundDim))
             )
         } else {
             // 默认背景

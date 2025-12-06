@@ -521,17 +521,40 @@ private fun KStatusCard(
         UninstallDialog(showDialog = showUninstallDialog, navigator)
     }
 
-    val cardBackgroundColor = when (kpState) {
+    val prefs = APApplication.sharedPreferences
+    val darkThemeFollowSys = prefs.getBoolean("night_mode_follow_sys", true)
+    val nightModeEnabled = prefs.getBoolean("night_mode_enabled", false)
+    val isDarkTheme = if (darkThemeFollowSys) {
+        isSystemInDarkTheme()
+    } else {
+        nightModeEnabled
+    }
+
+    val (cardBackgroundColor, cardContentColor) = when (kpState) {
         APApplication.State.KERNELPATCH_INSTALLED -> {
-            MaterialTheme.colorScheme.primary
+            if (BackgroundConfig.isCustomBackgroundEnabled) {
+                val opacity = BackgroundConfig.customBackgroundOpacity
+                val contentColor = if (opacity < 0.4f) {
+                    if (isDarkTheme) Color.White else Color.Black
+                } else {
+                    MaterialTheme.colorScheme.onPrimary
+                }
+                MaterialTheme.colorScheme.primary.copy(alpha = opacity) to contentColor
+            } else {
+                MaterialTheme.colorScheme.primary to MaterialTheme.colorScheme.onPrimary
+            }
         }
 
         APApplication.State.KERNELPATCH_NEED_UPDATE, APApplication.State.KERNELPATCH_NEED_REBOOT -> {
-            MaterialTheme.colorScheme.secondary
+            if (BackgroundConfig.isCustomBackgroundEnabled) {
+                MaterialTheme.colorScheme.secondary.copy(alpha = BackgroundConfig.customBackgroundOpacity) to MaterialTheme.colorScheme.onSecondary
+            } else {
+                MaterialTheme.colorScheme.secondary to MaterialTheme.colorScheme.onSecondary
+            }
         }
 
         else -> {
-            MaterialTheme.colorScheme.secondaryContainer
+            MaterialTheme.colorScheme.secondaryContainer to MaterialTheme.colorScheme.onSecondaryContainer
         }
     }
 
@@ -541,7 +564,10 @@ private fun KStatusCard(
                 navigator.navigate(InstallModeSelectScreenDestination)
             }
         },
-        colors = CardDefaults.elevatedCardColors(containerColor = cardBackgroundColor),
+        colors = CardDefaults.elevatedCardColors(
+            containerColor = cardBackgroundColor,
+            contentColor = cardContentColor
+        ),
         elevation = CardDefaults.cardElevation(
             defaultElevation = if (BackgroundConfig.isCustomBackgroundEnabled) 0.dp else 6.dp
         ),
@@ -667,6 +693,19 @@ private fun KStatusCard(
                                 }
                             }
                         }
+                    }, colors = if (BackgroundConfig.isCustomBackgroundEnabled && kpState == APApplication.State.KERNELPATCH_INSTALLED) {
+                        val opacity = BackgroundConfig.customBackgroundOpacity
+                        val contentColor = if (opacity < 0.4f) {
+                            if (isDarkTheme) Color.White else Color.Black
+                        } else {
+                            MaterialTheme.colorScheme.onPrimary
+                        }
+                        ButtonDefaults.buttonColors(
+                            containerColor = MaterialTheme.colorScheme.primary.copy(alpha = opacity),
+                            contentColor = contentColor
+                        )
+                    } else {
+                        ButtonDefaults.buttonColors()
                     }, content = {
                         when (kpState) {
                             APApplication.State.UNKNOWN_STATE -> {
@@ -701,7 +740,7 @@ private fun AStatusCard(apState: APApplication.State) {
     ElevatedCard(
         colors = CardDefaults.elevatedCardColors(containerColor = run {
             if (BackgroundConfig.isCustomBackgroundEnabled) {
-                MaterialTheme.colorScheme.secondaryContainer
+                MaterialTheme.colorScheme.secondaryContainer.copy(alpha = BackgroundConfig.customBackgroundOpacity)
             } else {
                 MaterialTheme.colorScheme.surfaceContainer
             }

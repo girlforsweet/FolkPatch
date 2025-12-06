@@ -182,7 +182,7 @@ fun APatchTheme(
     }
     
     val colorScheme = baseColorScheme.copy(
-        background = if (BackgroundConfig.isCustomBackgroundEnabled) Color.Black.copy(alpha = BackgroundConfig.customBackgroundDim) else baseColorScheme.background,
+        background = if (BackgroundConfig.isCustomBackgroundEnabled) Color.Transparent else baseColorScheme.background,
         surface = if (BackgroundConfig.isCustomBackgroundEnabled) {
             // 在自定义背景模式下，为surface添加半透明效果
             baseColorScheme.surface.copy(alpha = BackgroundConfig.customBackgroundOpacity)
@@ -292,8 +292,16 @@ fun BackgroundLayer() {
         Box(
             modifier = Modifier
                 .fillMaxSize()
-                .zIndex(-1f)
+                .zIndex(-2f)
                 .paint(painter = painter, contentScale = ContentScale.Crop)
+        )
+        
+        // 遮罩层
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+                .zIndex(-1f)
+                .background(Color.Black.copy(alpha = BackgroundConfig.customBackgroundDim))
         )
     }
 }
