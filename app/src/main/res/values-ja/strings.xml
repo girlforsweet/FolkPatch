@@ -371,4 +371,7 @@
     <string name="settings_home_layout_style">ホームレイアウトスタイル</string>
     <string name="settings_home_layout_default">ListUI</string>
     <string name="settings_home_layout_grid">GridUI</string>
+    <string name="unofficial_version_title">非公式バージョン</string>
+    <string name="unofficial_version_message">使用している FolkPatch は公式アプリではありません。公式アプリをダウンロードしてください！</string>
+    <string name="go_to_github">Github へ移動</string>
 </resources>

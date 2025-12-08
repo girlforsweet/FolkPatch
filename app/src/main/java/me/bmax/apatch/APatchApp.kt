@@ -81,7 +81,8 @@ class APApplication : Application(), Thread.UncaughtExceptionHandler {
         const val SP_NAME = "config"
         private const val SHOW_BACKUP_WARN = "show_backup_warning"
         lateinit var sharedPreferences: SharedPreferences
-
+        var isSignatureValid = true
+        
         private val logCallback: CallbackList<String?> = object : CallbackList<String?>() {
             override fun onAddElement(s: String?) {
                 Log.d(TAG, s.toString())
@@ -268,14 +269,7 @@ class APApplication : Application(), Thread.UncaughtExceptionHandler {
         Log.d(TAG, "Checking app signature...")
         if (!BuildConfig.DEBUG && !verifyAppSignature("a9eba5b702eb55fb5f4b1a672a7133a16a7bcaea949cde43c812ef26c77de812")) {
             Log.e(TAG, "App signature verification failed!")
-            while (true) {
-                val intent = Intent(Intent.ACTION_DELETE)
-                intent.data = "package:$packageName".toUri()
-                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-                intent.addFlags(Intent.FLAG_ACTIVITY_EXCLUDE_FROM_RECENTS)
-                startActivity(intent)
-                exitProcess(0)
-            }
+            isSignatureValid = false
         }
         Log.d(TAG, "App signature verification passed")
 

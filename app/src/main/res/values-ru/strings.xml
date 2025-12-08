@@ -414,4 +414,7 @@
     <string name="settings_home_layout_style">Стиль главной страницы</string>
     <string name="settings_home_layout_default">ListUI</string>
     <string name="settings_home_layout_grid">GridUI</string>
+    <string name="unofficial_version_title">Неофициальная версия</string>
+    <string name="unofficial_version_message">Вы используете FolkPatch, который не является официальным приложением, пожалуйста, скачайте официальное приложение!</string>
+    <string name="go_to_github">Перейти на Github</string>
 </resources>

@@ -403,4 +403,7 @@
     <string name="settings_home_layout_style">首頁佈局樣式</string>
     <string name="settings_home_layout_default">ListUI</string>
     <string name="settings_home_layout_grid">GridUI</string>
+    <string name="unofficial_version_title">非官方版本</string>
+    <string name="unofficial_version_message">你使用的FolkPatch並不是官方渠道下載的正版APP,請下載正版APP使用!</string>
+    <string name="go_to_github">前往 Github</string>
 </resources>

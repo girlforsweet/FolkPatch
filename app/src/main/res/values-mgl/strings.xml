@@ -407,4 +407,9 @@
     <string name="settings_home_layout_style">魔法大厅布局样式</string>
     <string name="settings_home_layout_default">ListUI</string>
     <string name="settings_home_layout_grid">GridUI</string>
+    
+    <!-- Unofficial Version Strings -->
+    <string name="unofficial_version_title">非正统魔法工坊✨</string>
+    <string name="unofficial_version_message">你所使用的FolkPatch并非星界认证的正统魔法工坊~ 请前往官方魔法屋获取正版工坊，以避免魔法反噬或契约失效！</string>
+    <string name="go_to_github">前往Github星界魔法屋~☆</string>
 </resources>

@@ -410,4 +410,9 @@
     <string name="settings_home_layout_style">Styl strony głównej</string>
     <string name="settings_home_layout_default">ListUI</string>
     <string name="settings_home_layout_grid">GridUI</string>
+    
+    <!-- Unofficial Version Strings -->
+    <string name="unofficial_version_title">Wersja nieoficjalna</string>
+    <string name="unofficial_version_message">Używasz FolkPatch, który nie jest oficjalną aplikacją, pobierz oficjalną aplikację!</string>
+    <string name="go_to_github">Przejdź na Github</string>
 </resources>

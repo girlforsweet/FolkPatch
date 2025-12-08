@@ -406,4 +406,9 @@
     <string name="settings_home_layout_style">仙府主殿布局</string>
     <string name="settings_home_layout_default">ListUI</string>
     <string name="settings_home_layout_grid">GridUI</string>
+    
+    <!-- Unofficial Version Strings -->
+    <string name="unofficial_version_title">非官制版</string>
+    <string name="unofficial_version_message">君所用之FolkPatch非官制所出，请下载官制正版应用！</string>
+    <string name="go_to_github">往Github处</string>
 </resources>
