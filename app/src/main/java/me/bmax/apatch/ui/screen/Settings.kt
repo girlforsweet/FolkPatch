@@ -835,6 +835,28 @@ fun SettingScreen() {
             }
 
             // Custom Font Settings
+            val pickFontLauncher = rememberLauncherForActivityResult(
+                ActivityResultContracts.GetContent()
+            ) { uri: Uri? ->
+                uri?.let {
+                    scope.launch {
+                        loadingDialog.show()
+                        val success = FontConfig.saveFontFile(context, it)
+                        loadingDialog.hide()
+                        if (success) {
+                            snackBarHost.showSnackbar(
+                                message = context.getString(R.string.settings_custom_font_saved)
+                            )
+                            refreshTheme.value = true
+                        } else {
+                            snackBarHost.showSnackbar(
+                                message = context.getString(R.string.settings_custom_font_error)
+                            )
+                        }
+                    }
+                }
+            }
+
             SwitchItem(
                 icon = Icons.Filled.TextFields,
                 title = stringResource(id = R.string.settings_custom_font),
@@ -854,33 +876,11 @@ fun SettingScreen() {
                         )
                     }
                 } else {
-                    FontConfig.setCustomFontEnabledState(true)
+                    pickFontLauncher.launch("*/*")
                 }
             }
 
             if (FontConfig.isCustomFontEnabled) {
-                val pickFontLauncher = rememberLauncherForActivityResult(
-                    ActivityResultContracts.GetContent()
-                ) { uri: Uri? ->
-                    uri?.let {
-                        scope.launch {
-                            loadingDialog.show()
-                            val success = FontConfig.saveFontFile(context, it)
-                            loadingDialog.hide()
-                            if (success) {
-                                snackBarHost.showSnackbar(
-                                    message = context.getString(R.string.settings_custom_font_saved)
-                                )
-                                refreshTheme.value = true
-                            } else {
-                                snackBarHost.showSnackbar(
-                                    message = context.getString(R.string.settings_custom_font_error)
-                                )
-                            }
-                        }
-                    }
-                }
-
                 ListItem(
                     headlineContent = {
                         Text(text = stringResource(id = R.string.settings_select_font_file))
