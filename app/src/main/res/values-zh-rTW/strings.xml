@@ -406,4 +406,10 @@
     <string name="unofficial_version_title">非官方版本</string>
     <string name="unofficial_version_message">你使用的FolkPatch並不是官方渠道下載的正版APP,請下載正版APP使用!</string>
     <string name="go_to_github">前往 Github</string>
+    <string name="settings_save_theme">儲存主題</string>
+    <string name="settings_import_theme">匯入主題</string>
+    <string name="settings_theme_saved">主題已儲存</string>
+    <string name="settings_theme_imported">主題已匯入</string>
+    <string name="settings_theme_save_failed">儲存主題失敗</string>
+    <string name="settings_theme_import_failed">匯入主題失敗</string>
 </resources>

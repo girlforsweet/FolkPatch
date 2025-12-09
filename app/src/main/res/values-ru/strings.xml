@@ -417,4 +417,10 @@
     <string name="unofficial_version_title">Неофициальная версия</string>
     <string name="unofficial_version_message">Вы используете FolkPatch, который не является официальным приложением, пожалуйста, скачайте официальное приложение!</string>
     <string name="go_to_github">Перейти на Github</string>
+    <string name="settings_save_theme">Сохранить тему</string>
+    <string name="settings_import_theme">Импортировать тему</string>
+    <string name="settings_theme_saved">Тема сохранена</string>
+    <string name="settings_theme_imported">Тема импортирована</string>
+    <string name="settings_theme_save_failed">Не удалось сохранить тему</string>
+    <string name="settings_theme_import_failed">Не удалось импортировать тему</string>
 </resources>

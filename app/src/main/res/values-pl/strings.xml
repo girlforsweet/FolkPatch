@@ -415,4 +415,10 @@
     <string name="unofficial_version_title">Wersja nieoficjalna</string>
     <string name="unofficial_version_message">Używasz FolkPatch, który nie jest oficjalną aplikacją, pobierz oficjalną aplikację!</string>
     <string name="go_to_github">Przejdź na Github</string>
+    <string name="settings_save_theme">Zapisz motyw</string>
+    <string name="settings_import_theme">Importuj motyw</string>
+    <string name="settings_theme_saved">Motyw zapisany</string>
+    <string name="settings_theme_imported">Motyw zaimportowany</string>
+    <string name="settings_theme_save_failed">Nie udało się zapisać motywu</string>
+    <string name="settings_theme_import_failed">Nie udało się zaimportować motywu</string>
 </resources>

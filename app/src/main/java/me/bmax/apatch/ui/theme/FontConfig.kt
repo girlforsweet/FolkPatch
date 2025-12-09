@@ -22,6 +22,10 @@ object FontConfig {
     var customFontFilename: String? by mutableStateOf(null)
         private set
 
+    fun setCustomFontEnabledState(enabled: Boolean) {
+        isCustomFontEnabled = enabled
+    }
+
     fun load(context: Context) {
         val prefs = context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE)
         isCustomFontEnabled = prefs.getBoolean(KEY_CUSTOM_FONT_ENABLED, false)
@@ -56,6 +60,30 @@ object FontConfig {
             .putBoolean(KEY_CUSTOM_FONT_ENABLED, isCustomFontEnabled)
             .putString(KEY_CUSTOM_FONT_PATH, customFontFilename)
             .apply()
+    }
+
+    fun applyCustomFont(context: Context, sourceFile: File) {
+        val newFilename = "custom_font_${System.currentTimeMillis()}.ttf"
+        val oldFilename = customFontFilename
+        
+        try {
+            val destFile = File(context.filesDir, newFilename)
+            sourceFile.copyTo(destFile, overwrite = true)
+            
+            // Delete old file if it exists and is different
+            if (oldFilename != null && oldFilename != newFilename) {
+                val oldFile = File(context.filesDir, oldFilename)
+                if (oldFile.exists()) {
+                    oldFile.delete()
+                }
+            }
+            
+            isCustomFontEnabled = true
+            customFontFilename = newFilename
+            save(context)
+        } catch (e: Exception) {
+            Log.e(TAG, "Failed to apply custom font", e)
+        }
     }
 
     fun saveFontFile(context: Context, uri: Uri): Boolean {

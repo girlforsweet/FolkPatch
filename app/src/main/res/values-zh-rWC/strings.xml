@@ -411,4 +411,10 @@
     <string name="unofficial_version_title">非官制版</string>
     <string name="unofficial_version_message">君所用之FolkPatch非官制所出，请下载官制正版应用！</string>
     <string name="go_to_github">往Github处</string>
+    <string name="settings_save_theme">藏仙府色章</string>
+    <string name="settings_import_theme">引仙府色章</string>
+    <string name="settings_theme_saved">仙府色章已藏</string>
+    <string name="settings_theme_imported">仙府色章已引</string>
+    <string name="settings_theme_save_failed">藏仙府色章败陨</string>
+    <string name="settings_theme_import_failed">引仙府色章败陨</string>
 </resources>

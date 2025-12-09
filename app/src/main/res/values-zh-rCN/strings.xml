@@ -410,4 +410,10 @@
     <string name="unofficial_version_title">非官方版本</string>
     <string name="unofficial_version_message">您正在使用的 FolkPatch 管理器為第三方版本，可能會造成財產損失，請下載正版APP使用！</string>
     <string name="go_to_github">前往 Github</string>
+    <string name="settings_save_theme">保存主题</string>
+    <string name="settings_import_theme">导入主题</string>
+    <string name="settings_theme_saved">主题已保存</string>
+    <string name="settings_theme_imported">主题已导入</string>
+    <string name="settings_theme_save_failed">保存主题失败</string>
+    <string name="settings_theme_import_failed">导入主题失败</string>
 </resources>

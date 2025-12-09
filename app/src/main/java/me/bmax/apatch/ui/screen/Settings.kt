@@ -108,6 +108,7 @@ import me.bmax.apatch.ui.component.rememberLoadingDialog
 import me.bmax.apatch.ui.theme.BackgroundConfig
 import me.bmax.apatch.ui.theme.BackgroundManager
 import me.bmax.apatch.ui.theme.FontConfig
+import me.bmax.apatch.ui.theme.ThemeManager
 import me.bmax.apatch.ui.theme.refreshTheme
 import me.bmax.apatch.util.APatchKeyHelper
 import me.bmax.apatch.util.PermissionRequestHandler
@@ -553,10 +554,14 @@ fun SettingScreen() {
 
 
             // Night Mode Follow System
+            val refreshThemeObserver by refreshTheme.observeAsState(false)
             var nightFollowSystem by rememberSaveable {
                 mutableStateOf(
                     prefs.getBoolean("night_mode_follow_sys", true)
                 )
+            }
+            if (refreshThemeObserver) {
+                nightFollowSystem = prefs.getBoolean("night_mode_follow_sys", true)
             }
             SwitchItem(
                 icon = Icons.Filled.InvertColors,
@@ -576,6 +581,9 @@ fun SettingScreen() {
                         prefs.getBoolean("night_mode_enabled", false)
                     )
                 }
+                if (refreshThemeObserver) {
+                    nightThemeEnabled = prefs.getBoolean("night_mode_enabled", false)
+                }
                 SwitchItem(
                     icon = Icons.Filled.DarkMode,
                     title = stringResource(id = R.string.settings_night_theme_enabled),
@@ -594,6 +602,9 @@ fun SettingScreen() {
                     mutableStateOf(
                         prefs.getBoolean("use_system_color_theme", true)
                     )
+                }
+                if (refreshThemeObserver) {
+                    useSystemDynamicColor = prefs.getBoolean("use_system_color_theme", true)
                 }
                 SwitchItem(
                     icon = Icons.Filled.ColorLens,
@@ -664,23 +675,13 @@ fun SettingScreen() {
             }, leadingContent = { Icon(painterResource(id = R.drawable.settings), null) })
 
             // Custom Background Settings
-            var isCustomBackgroundEnabled by rememberSaveable {
-                mutableStateOf(
-                    BackgroundConfig.isCustomBackgroundEnabled
-                )
-            }
-            var customBackgroundUri by rememberSaveable {
-                mutableStateOf(
-                    BackgroundConfig.customBackgroundUri ?: ""
-                )
-            }
             
             // Custom background toggle
             SwitchItem(
                 icon = Icons.Filled.FormatColorFill,
                 title = stringResource(id = R.string.settings_custom_background),
-                summary = if (isCustomBackgroundEnabled) {
-                    if (customBackgroundUri.isNotEmpty()) {
+                summary = if (BackgroundConfig.isCustomBackgroundEnabled) {
+                    if (!BackgroundConfig.customBackgroundUri.isNullOrEmpty()) {
                         stringResource(id = R.string.settings_custom_background_enabled)
                     } else {
                         stringResource(id = R.string.settings_select_background_image)
@@ -688,25 +689,22 @@ fun SettingScreen() {
                 } else {
                     stringResource(id = R.string.settings_custom_background_summary)
                 },
-                checked = isCustomBackgroundEnabled
+                checked = BackgroundConfig.isCustomBackgroundEnabled
             ) {
-                isCustomBackgroundEnabled = it
                 BackgroundConfig.setCustomBackgroundEnabledState(it)
                 BackgroundConfig.save(context)
                 refreshTheme.value = true
             }
             
             // Select background image (only show when custom background is enabled)
-            if (isCustomBackgroundEnabled) {
+            if (BackgroundConfig.isCustomBackgroundEnabled) {
                 // Opacity Slider
-                var opacity by remember { mutableStateOf(BackgroundConfig.customBackgroundOpacity) }
                 ListItem(
                     headlineContent = { Text(stringResource(id = R.string.settings_custom_background_opacity)) },
                     supportingContent = {
                         androidx.compose.material3.Slider(
-                            value = opacity,
+                            value = BackgroundConfig.customBackgroundOpacity,
                             onValueChange = {
-                                opacity = it
                                 BackgroundConfig.setCustomBackgroundOpacityValue(it)
                             },
                             onValueChangeFinished = {
@@ -722,14 +720,12 @@ fun SettingScreen() {
                 )
 
                 // Dim Slider
-                var dim by remember { mutableStateOf(BackgroundConfig.customBackgroundDim) }
                 ListItem(
                     headlineContent = { Text(stringResource(id = R.string.settings_custom_background_dim)) },
                     supportingContent = {
                         androidx.compose.material3.Slider(
-                            value = dim,
+                            value = BackgroundConfig.customBackgroundDim,
                             onValueChange = {
-                                dim = it
                                 BackgroundConfig.setCustomBackgroundDimValue(it)
                             },
                             onValueChangeFinished = {
@@ -753,8 +749,6 @@ fun SettingScreen() {
                             val success = BackgroundManager.saveAndApplyCustomBackground(context, it)
                             loadingDialog.hide()
                             if (success) {
-                                // 使用保存后的URI，而不是原始URI
-                                customBackgroundUri = BackgroundConfig.customBackgroundUri ?: ""
                                 snackBarHost.showSnackbar(
                                     message = context.getString(R.string.settings_custom_background_saved)
                                 )
@@ -780,7 +774,7 @@ fun SettingScreen() {
                         Text(text = stringResource(id = R.string.settings_select_background_image))
                     },
                     supportingContent = {
-                        if (customBackgroundUri.isNotEmpty()) {
+                        if (!BackgroundConfig.customBackgroundUri.isNullOrEmpty()) {
                             Text(
                                 text = stringResource(id = R.string.settings_background_selected),
                                 style = MaterialTheme.typography.bodyMedium,
@@ -807,13 +801,12 @@ fun SettingScreen() {
                 )
                 
                 // Clear background button (only show when there's a background set)
-                if (customBackgroundUri.isNotEmpty()) {
+                if (!BackgroundConfig.customBackgroundUri.isNullOrEmpty()) {
                     val clearBackgroundDialog = rememberConfirmDialog(
                         onConfirm = {
                             scope.launch {
                                 loadingDialog.show()
                                 BackgroundManager.clearCustomBackground(context)
-                                customBackgroundUri = ""
                                 loadingDialog.hide()
                                 snackBarHost.showSnackbar(
                                     message = context.getString(R.string.settings_background_image_cleared)
@@ -842,21 +835,15 @@ fun SettingScreen() {
             }
 
             // Custom Font Settings
-            var isCustomFontEnabled by rememberSaveable {
-                mutableStateOf(
-                    FontConfig.isCustomFontEnabled
-                )
-            }
-
             SwitchItem(
                 icon = Icons.Filled.TextFields,
                 title = stringResource(id = R.string.settings_custom_font),
-                summary = if (isCustomFontEnabled) {
+                summary = if (FontConfig.isCustomFontEnabled) {
                     stringResource(id = R.string.settings_font_selected)
                 } else {
                     stringResource(id = R.string.settings_custom_font_summary)
                 },
-                checked = isCustomFontEnabled
+                checked = FontConfig.isCustomFontEnabled
             ) {
                 if (!it) {
                     FontConfig.clearFont(context)
@@ -866,11 +853,12 @@ fun SettingScreen() {
                             message = context.getString(R.string.settings_font_cleared)
                         )
                     }
+                } else {
+                    FontConfig.setCustomFontEnabledState(true)
                 }
-                isCustomFontEnabled = it
             }
 
-            if (isCustomFontEnabled) {
+            if (FontConfig.isCustomFontEnabled) {
                 val pickFontLauncher = rememberLauncherForActivityResult(
                     ActivityResultContracts.GetContent()
                 ) { uri: Uri? ->
@@ -966,6 +954,53 @@ fun SettingScreen() {
                     style = MaterialTheme.typography.bodyMedium,
                     color = MaterialTheme.colorScheme.outline)
             }, leadingContent = { Icon(Icons.Filled.Translate, null) })
+
+            // theme import/export
+            val exportThemeLauncher = rememberLauncherForActivityResult(
+                ActivityResultContracts.CreateDocument("application/octet-stream")
+            ) { uri: Uri? ->
+                if (uri != null) {
+                    scope.launch {
+                        loadingDialog.show()
+                        val success = ThemeManager.exportTheme(context, uri)
+                        loadingDialog.hide()
+                        snackBarHost.showSnackbar(
+                            message = if (success) context.getString(R.string.settings_theme_saved) else context.getString(R.string.settings_theme_save_failed)
+                        )
+                    }
+                }
+            }
+
+            val importThemeLauncher = rememberLauncherForActivityResult(
+                ActivityResultContracts.OpenDocument()
+            ) { uri: Uri? ->
+                if (uri != null) {
+                    scope.launch {
+                        loadingDialog.show()
+                        val success = ThemeManager.importTheme(context, uri)
+                        loadingDialog.hide()
+                        snackBarHost.showSnackbar(
+                            message = if (success) context.getString(R.string.settings_theme_imported) else context.getString(R.string.settings_theme_import_failed)
+                        )
+                    }
+                }
+            }
+
+            ListItem(
+                headlineContent = { Text(text = stringResource(id = R.string.settings_save_theme)) },
+                modifier = Modifier.clickable {
+                    exportThemeLauncher.launch("theme.fpt")
+                },
+                leadingContent = { Icon(Icons.Filled.Save, null) }
+            )
+
+            ListItem(
+                headlineContent = { Text(text = stringResource(id = R.string.settings_import_theme)) },
+                modifier = Modifier.clickable {
+                    importThemeLauncher.launch(arrayOf("application/octet-stream", "*/*"))
+                },
+                leadingContent = { Icon(Icons.Filled.Folder, null) }
+            )
 
             // log
             ListItem(

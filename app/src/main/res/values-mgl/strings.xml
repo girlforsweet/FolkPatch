@@ -412,4 +412,10 @@
     <string name="unofficial_version_title">非正统魔法工坊✨</string>
     <string name="unofficial_version_message">你所使用的FolkPatch并非星界认证的正统魔法工坊~ 请前往官方魔法屋获取正版工坊，以避免魔法反噬或契约失效！</string>
     <string name="go_to_github">前往Github星界魔法屋~☆</string>
+    <string name="settings_save_theme">封印魔法主题</string>
+    <string name="settings_import_theme">唤醒魔法主题</string>
+    <string name="settings_theme_saved">魔法主题已封印</string>
+    <string name="settings_theme_imported">魔法主题已唤醒</string>
+    <string name="settings_theme_save_failed">封印魔法主题失败</string>
+    <string name="settings_theme_import_failed">唤醒魔法主题失败</string>
 </resources>

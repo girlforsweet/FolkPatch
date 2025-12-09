@@ -374,4 +374,10 @@
     <string name="unofficial_version_title">非公式バージョン</string>
     <string name="unofficial_version_message">使用している FolkPatch は公式アプリではありません。公式アプリをダウンロードしてください！</string>
     <string name="go_to_github">Github へ移動</string>
+    <string name="settings_save_theme">テーマを保存</string>
+    <string name="settings_import_theme">テーマをインポート</string>
+    <string name="settings_theme_saved">テーマが保存されました</string>
+    <string name="settings_theme_imported">テーマがインポートされました</string>
+    <string name="settings_theme_save_failed">テーマの保存に失敗しました</string>
+    <string name="settings_theme_import_failed">テーマのインポートに失敗しました</string>
 </resources>
