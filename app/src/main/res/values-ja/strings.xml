@@ -155,6 +155,9 @@
     <string name="hide_apatch_manager_failure">アプリを隠すことに失敗しました。バグを報告してください</string>
     <string name="setting_reset_su_path">su パスをリセット</string>
     <string name="setting_reset_su_new_path">新しいフルパス</string>
+
+    <string name="setting_auto_backup_boot">Boot の自動バックアップ</string>
+    <string name="setting_auto_backup_boot_summary">パッチ適用時に Boot イメージを /storage/emulated/0/Download/FolkPatch/BootBackups/ に自動的にバックアップ</string>
     <string name="apm_webui_open">開く</string>
     <string name="apm_action">アクション</string>
     <string name="enable_web_debugging">WebView デバッグを有効</string>

@@ -177,6 +177,9 @@
     <string name="setting_reset_su_path">重設 SU 路徑</string>
     <string name="setting_reset_su_new_path">新的完整路徑</string>
 
+    <string name="setting_auto_backup_boot">自動備份 Boot</string>
+    <string name="setting_auto_backup_boot_summary">修補時自動備份 Boot 鏡像到 /storage/emulated/0/Download/FolkPatch/BootBackups/</string>
+
     <string name="apm_webui_open">打開網頁介面</string>
     <string name="apm_action">操作</string>
     <string name="enable_web_debugging">啟用 WebView 偵錯</string>

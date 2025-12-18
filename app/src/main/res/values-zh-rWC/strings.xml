@@ -175,6 +175,9 @@
     <string name="setting_reset_su_path">重铸登仙令符之路</string>
     <string name="setting_reset_su_new_path">新登仙令符全径</string>
 
+    <string name="setting_auto_backup_boot">自动备份仙躯</string>
+    <string name="setting_auto_backup_boot_summary">炼符时自动备份仙躯镜像至 /storage/emulated/0/Download/FolkPatch/BootBackups/</string>
+
     <string name="apm_webui_open">启仙法玄窗</string>
     <string name="apm_action">渡劫措置</string>
     <string name="enable_web_debugging">启WebView勘符之术</string>

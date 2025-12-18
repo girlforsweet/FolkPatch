@@ -181,6 +181,9 @@
     <string name="setting_reset_su_path">Resetuj ścieżkę su</string>
     <string name="setting_reset_su_new_path">Nowa pełna ścieżka</string>
 
+    <string name="setting_auto_backup_boot">Automatyczna kopia zapasowa Boot</string>
+    <string name="setting_auto_backup_boot_summary">Automatycznie twórz kopię zapasową obrazu Boot do /storage/emulated/0/Download/FolkPatch/BootBackups/ podczas łatania</string>
+
     <string name="apm_webui_open">Otwórz</string>
     <string name="apm_action">Akcja</string>
     <string name="enable_web_debugging">Włącz debugowanie WebView</string>

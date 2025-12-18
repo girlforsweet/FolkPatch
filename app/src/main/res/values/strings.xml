@@ -188,6 +188,9 @@
     <string name="setting_reset_su_path">Reset su path</string>
     <string name="setting_reset_su_new_path">New full path</string>
 
+    <string name="setting_auto_backup_boot">Auto backup boot</string>
+    <string name="setting_auto_backup_boot_summary">Automatically backup boot image to /storage/emulated/0/Download/FolkPatch/BootBackups/ when patching</string>
+
     <string name="apm_webui_open">Open</string>
     <string name="apm_action">Action</string>
     <string name="enable_web_debugging">Enable WebView debugging</string>
@@ -583,4 +586,5 @@
     <!-- Install Mode Select -->
     <string name="kp_install_methods">KernelPatch Patching/Installing</string>
     <string name="restore_boot_methods">Select a boot to restore to boot partition</string>
+
 </resources>

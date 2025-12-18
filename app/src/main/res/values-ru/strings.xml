@@ -185,6 +185,9 @@
     <string name="setting_reset_su_path">Сбросить путь su</string>
     <string name="setting_reset_su_new_path">Новый полный путь</string>
 
+    <string name="setting_auto_backup_boot">Автоматическое резервное копирование Boot</string>
+    <string name="setting_auto_backup_boot_summary">Автоматически создавать резервную копию образа Boot в /storage/emulated/0/Download/FolkPatch/BootBackups/ при патчинге</string>
+
     <string name="apm_webui_open">Открыть</string>
     <string name="apm_action">Действие</string>
     <string name="enable_web_debugging">Включить отладку WebView</string>

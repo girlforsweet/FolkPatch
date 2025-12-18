@@ -40,6 +40,9 @@ import java.io.FileNotFoundException
 import java.io.IOException
 import java.io.InputStreamReader
 import java.io.StringReader
+import java.text.SimpleDateFormat
+import java.util.Date
+import java.util.Locale
 
 private const val TAG = "PatchViewModel"
 
@@ -367,6 +370,31 @@ class PatchesViewModel : ViewModel() {
                 }
             }
             logs.add("****************************")
+
+            // Auto Backup Boot
+            val prefs = APApplication.sharedPreferences
+            if (prefs.getBoolean("auto_backup_boot", true)) {
+                logs.add(" Backing up boot image...")
+                try {
+                    val backupDir = File("/storage/emulated/0/Download/FolkPatch/BootBackups/")
+                    if (!backupDir.exists()) {
+                        backupDir.mkdirs()
+                    }
+                    val timestamp = SimpleDateFormat("yyyyMMdd_HHmmss", Locale.getDefault()).format(Date())
+                    val backupFile = File(backupDir, "boot_backup_$timestamp.img")
+                    srcBoot.inputStream().use { input ->
+                        backupFile.outputStream().use { output ->
+                            input.copyTo(output)
+                        }
+                    }
+                    logs.add(" Boot image backed up to ${backupFile.absolutePath}")
+                    logs.add("****************************")
+                } catch (e: Exception) {
+                    logs.add(" Backup failed: ${e.message}")
+                    Log.e(TAG, "Backup failed", e)
+                    logs.add("****************************")
+                }
+            }
 
             if (mode == PatchMode.RESTORE) {
                 logs.add(" Restoring boot image...")

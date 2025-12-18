@@ -176,6 +176,9 @@
     <string name="setting_reset_su_path">重置圣光使者路径</string>
     <string name="setting_reset_su_new_path">新完整圣光路径</string>
 
+    <string name="setting_auto_backup_boot">自动备份圣器容器</string>
+    <string name="setting_auto_backup_boot_summary">加持时自动备份圣器容器到 /storage/emulated/0/Download/FolkPatch/BootBackups/</string>
+
     <string name="apm_webui_open">开启</string>
     <string name="apm_action">圣光操作</string>
     <string name="enable_web_debugging">启用圣光阵调试</string>

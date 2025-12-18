@@ -183,6 +183,9 @@
     <string name="setting_reset_su_path">Reset jalur su</string>
     <string name="setting_reset_su_new_path">Jalur penuh baru</string>
 
+    <string name="setting_auto_backup_boot">Cadangkan Boot otomatis</string>
+    <string name="setting_auto_backup_boot_summary">Otomatis mencadangkan image boot ke /storage/emulated/0/Download/FolkPatch/BootBackups/ saat melakukan patch</string>
+
     <string name="apm_webui_open">Buka</string>
     <string name="apm_action">Tindakan</string>
     <string name="enable_web_debugging">Aktifkan *debugging* WebView</string>

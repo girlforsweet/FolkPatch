@@ -186,6 +186,9 @@ fun SettingScreen(navigator: DestinationsNavigator) {
     var forceUsingOverlayFS by rememberSaveable {
         mutableStateOf(false)
     }
+    var autoBackupBoot by rememberSaveable {
+        mutableStateOf<Boolean>(APApplication.sharedPreferences.getBoolean("auto_backup_boot", true))
+    }
     var bSkipStoreSuperKey by rememberSaveable {
         mutableStateOf(APatchKeyHelper.shouldSkipStoreSuperKey())
     }
@@ -523,6 +526,10 @@ fun SettingScreen(navigator: DestinationsNavigator) {
             val overlayFSSummary = stringResource(id = R.string.settings_force_overlayfs_mode_summary)
             val showOverlayFS = (kPatchReady && aPatchReady && isOverlayFSAvailable) && (matchGeneral || shouldShow(overlayFSTitle, overlayFSSummary))
 
+            val autoBackupBootTitle = stringResource(id = R.string.setting_auto_backup_boot)
+            val autoBackupBootSummary = stringResource(id = R.string.setting_auto_backup_boot_summary)
+            val showAutoBackupBoot = matchGeneral || shouldShow(autoBackupBootTitle, autoBackupBootSummary)
+
             val resetSuPathTitle = stringResource(id = R.string.setting_reset_su_path)
             val showResetSuPath = kPatchReady && (matchGeneral || shouldShow(resetSuPathTitle))
 
@@ -544,7 +551,7 @@ fun SettingScreen(navigator: DestinationsNavigator) {
             val logTitle = stringResource(id = R.string.send_log)
             val showLog = matchGeneral || shouldShow(logTitle)
 
-            val showGeneralCategory = showLanguage || showUpdate || showAutoUpdate || showGlobalNamespace || showLiteMode || showOverlayFS || showResetSuPath || showAppTitle || showLauncherIcon || showDpi || showLog
+            val showGeneralCategory = showLanguage || showUpdate || showAutoUpdate || showGlobalNamespace || showLiteMode || showOverlayFS || showAutoBackupBoot || showResetSuPath || showAppTitle || showLauncherIcon || showDpi || showLog
 
             if (showGeneralCategory) {
                 SettingsCategory(icon = Icons.Filled.Tune, title = generalTitle, isSearching = searchText.isNotEmpty()) {
@@ -631,6 +638,19 @@ fun SettingScreen(navigator: DestinationsNavigator) {
                             onCheckedChange = {
                                 setForceUsingOverlayFS(it)
                                 forceUsingOverlayFS = it
+                            })
+                    }
+
+                    // Auto Backup Boot
+                    if (showAutoBackupBoot) {
+                        SwitchItem(
+                            icon = Icons.Filled.Save,
+                            title = autoBackupBootTitle,
+                            summary = autoBackupBootSummary,
+                            checked = autoBackupBoot,
+                            onCheckedChange = {
+                                prefs.edit { putBoolean("auto_backup_boot", it) }
+                                autoBackupBoot = it
                             })
                     }
 
