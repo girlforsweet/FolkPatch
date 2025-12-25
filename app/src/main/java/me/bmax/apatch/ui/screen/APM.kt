@@ -1017,7 +1017,10 @@ private fun ModuleItem(
                         FilledTonalButton(
                             onClick = { onUpdate(module) },
                             contentPadding = ButtonDefaults.TextButtonContentPadding,
-                            modifier = Modifier.height(36.dp)
+                            modifier = Modifier.height(36.dp),
+                            colors = ButtonDefaults.filledTonalButtonColors(
+                                containerColor = MaterialTheme.colorScheme.secondaryContainer.copy(alpha = (opacity + 0.3f).coerceAtMost(1f))
+                            )
                         ) {
                             Icon(
                                 imageVector = Icons.Outlined.Download,

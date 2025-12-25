@@ -86,7 +86,7 @@ fun DownloadListener(context: Context, onDownloaded: (Uri) -> Unit) {
             context,
             receiver,
             intentFilter,
-            ContextCompat.RECEIVER_NOT_EXPORTED
+            ContextCompat.RECEIVER_EXPORTED
         )
         onDispose {
             context.unregisterReceiver(receiver)

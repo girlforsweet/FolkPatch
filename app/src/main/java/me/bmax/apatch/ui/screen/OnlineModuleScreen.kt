@@ -24,6 +24,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.annotation.RootGraph
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
+import com.ramcosta.composedestinations.generated.destinations.InstallScreenDestination
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import me.bmax.apatch.R
@@ -114,6 +115,10 @@ fun OnlineModuleScreen(navigator: DestinationsNavigator) {
                     }
                 }
             }
+        }
+        
+        DownloadListener(context) { uri ->
+            navigator.navigate(InstallScreenDestination(uri, MODULE_TYPE.APM))
         }
     }
 }
