@@ -441,6 +441,7 @@
     <string name="settings_home_layout_style">Gaya tata letak utama</string>
     <string name="settings_home_layout_default">ListUI</string>
     <string name="settings_home_layout_grid">GridUI</string>
+    <string name="settings_home_layout_focus">FocusUI</string>
     <string name="unofficial_version_title">Versi Tidak Resmi</string>
     <string name="unofficial_version_message">Anda menggunakan FolkPatch, yang bukan aplikasi resmi, harap unduh aplikasi resmi!</string>
     <string name="go_to_github">Buka Github</string>
@@ -484,6 +485,7 @@
     <string name="theme_store_search_hint">Cari tema...</string>
     <string name="theme_source_official">Resmi</string>
     <string name="theme_source_third_party">Pihak Ketiga</string>
+    <string name="theme_source_local">Lokal</string>
     <string name="theme_store_author">Pencipta: %s</string>
     <string name="theme_store_version">Versi: %s</string>
     <string name="theme_source">Sumber</string>

@@ -510,6 +510,7 @@
     <string name="theme_store_title">متجر السمات</string>
     <string name="theme_source_official">رسمي</string>
     <string name="theme_source_third_party">طرف ثالث</string>
+    <string name="theme_source_local">محلي</string>
     <string name="theme_store_author">المؤلف: %s</string>
     <string name="theme_store_version">الإصدار: %s</string>
     <string name="theme_source">المصدر</string>

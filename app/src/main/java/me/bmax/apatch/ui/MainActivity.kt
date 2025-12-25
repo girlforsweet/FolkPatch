@@ -81,7 +81,9 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.background
 import androidx.compose.ui.window.DialogProperties
 import me.bmax.apatch.R
 import androidx.compose.runtime.LaunchedEffect
@@ -101,6 +103,7 @@ class MainActivity : AppCompatActivity() {
     private var isLoading = true
     private var installUri: Uri? = null
     private lateinit var permissionHandler: PermissionRequestHandler
+    private val isLocked = mutableStateOf(false)
 
     override fun attachBaseContext(newBase: android.content.Context) {
         super.attachBaseContext(me.bmax.apatch.util.DPIUtils.updateContext(newBase))
@@ -148,6 +151,7 @@ class MainActivity : AppCompatActivity() {
         ) == androidx.biometric.BiometricManager.BIOMETRIC_SUCCESS
 
         if (biometricLogin && canAuthenticate) {
+            isLocked.value = true
             val biometricPrompt = androidx.biometric.BiometricPrompt(
                 this,
                 androidx.core.content.ContextCompat.getMainExecutor(this),
@@ -160,7 +164,7 @@ class MainActivity : AppCompatActivity() {
 
                     override fun onAuthenticationSucceeded(result: androidx.biometric.BiometricPrompt.AuthenticationResult) {
                         super.onAuthenticationSucceeded(result)
-                        setupUI()
+                        isLocked.value = false
                     }
                 })
             val promptInfo = androidx.biometric.BiometricPrompt.PromptInfo.Builder()
@@ -169,9 +173,8 @@ class MainActivity : AppCompatActivity() {
                 .setAllowedAuthenticators(androidx.biometric.BiometricManager.Authenticators.BIOMETRIC_STRONG or androidx.biometric.BiometricManager.Authenticators.DEVICE_CREDENTIAL)
                 .build()
             biometricPrompt.authenticate(promptInfo)
-        } else {
-            setupUI()
         }
+        setupUI()
     }
 
     private fun setupUI() {
@@ -194,6 +197,10 @@ class MainActivity : AppCompatActivity() {
         }
 
         setContent {
+            val locked by remember { isLocked }
+            if (locked) {
+                Box(modifier = Modifier.fillMaxSize().background(MaterialTheme.colorScheme.background))
+            } else {
             val prefs = APApplication.sharedPreferences
             var folkXEngineEnabled by remember {
                 mutableStateOf(prefs.getBoolean("folkx_engine_enabled", true))
@@ -433,6 +440,7 @@ class MainActivity : AppCompatActivity() {
                     }
                 }
             }
+        }
         }
 
         // Initialize Coil

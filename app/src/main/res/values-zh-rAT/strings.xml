@@ -445,6 +445,7 @@
     <string name="settings_home_layout_style">天使殿堂布局样式</string>
     <string name="settings_home_layout_default">ListUI</string>
     <string name="settings_home_layout_grid">GridUI</string>
+    <string name="settings_home_layout_focus">FocusUI</string>
     
     <!-- Unofficial Version Strings -->
     <string name="unofficial_version_title">非正统天使工坊✨</string>
@@ -494,6 +495,7 @@
     <string name="theme_store_search_hint">搜索魔法主题...</string>
     <string name="theme_source_official">天使工坊直供</string>
     <string name="theme_source_third_party">同好魔法分享</string>
+    <string name="theme_source_local">本地</string>
     <string name="theme_store_author">编织师: %s</string>
     <string name="theme_store_version">咒语版本: %s</string>
     <string name="theme_source">魔力源流</string>
