@@ -105,11 +105,11 @@ object ThemeManager {
                     backgroundDayDim = BackgroundConfig.customBackgroundDayDim,
                     backgroundNightDim = BackgroundConfig.customBackgroundNightDim,
                     isFontEnabled = FontConfig.isCustomFontEnabled,
-                    customColor = prefs.getString("custom_color", "blue") ?: "blue",
-                    homeLayoutStyle = prefs.getString("home_layout_style", "default") ?: "default",
-                    nightModeEnabled = prefs.getBoolean("night_mode_enabled", false),
-                    nightModeFollowSys = prefs.getBoolean("night_mode_follow_sys", true),
-                    useSystemDynamicColor = prefs.getBoolean("use_system_color_theme", true),
+                    customColor = prefs.getString("custom_color", "indigo") ?: "indigo",
+                    homeLayoutStyle = prefs.getString("home_layout_style", "kernelsu") ?: "kernelsu",
+                    nightModeEnabled = prefs.getBoolean("night_mode_enabled", true),
+                    nightModeFollowSys = prefs.getBoolean("night_mode_follow_sys", false),
+                    useSystemDynamicColor = prefs.getBoolean("use_system_color_theme", false),
                     appLanguage = AppCompatDelegate.getApplicationLocales().toLanguageTags(),
                     isGridWorkingCardBackgroundEnabled = BackgroundConfig.isGridWorkingCardBackgroundEnabled,
                     gridWorkingCardBackgroundOpacity = BackgroundConfig.gridWorkingCardBackgroundOpacity,
@@ -381,11 +381,11 @@ object ThemeManager {
                 val backgroundDayDim = json.optDouble("backgroundDayDim", backgroundDim.toDouble()).toFloat()
                 val backgroundNightDim = json.optDouble("backgroundNightDim", backgroundDim.toDouble()).toFloat()
                 val isFontEnabled = json.optBoolean("isFontEnabled", false)
-                val customColor = json.optString("customColor", "blue")
-                val homeLayoutStyle = json.optString("homeLayoutStyle", "default")
-                val nightModeEnabled = json.optBoolean("nightModeEnabled", false)
-                val nightModeFollowSys = json.optBoolean("nightModeFollowSys", true)
-                val useSystemDynamicColor = json.optBoolean("useSystemDynamicColor", true)
+                val customColor = json.optString("customColor", "indigo")
+                val homeLayoutStyle = json.optString("homeLayoutStyle", "kernelsu")
+                val nightModeEnabled = json.optBoolean("nightModeEnabled", true)
+                val nightModeFollowSys = json.optBoolean("nightModeFollowSys", false)
+                val useSystemDynamicColor = json.optBoolean("useSystemDynamicColor", false)
                 val appLanguage = json.optString("appLanguage", "")
                 
                 // Grid Working Card Background

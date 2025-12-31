@@ -331,17 +331,17 @@ fun SettingScreen(navigator: DestinationsNavigator) {
 
         // Appearance
         val isNightModeSupported = Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q
-        var nightModeFollowSys by rememberSaveable { mutableStateOf(prefs.getBoolean("night_mode_follow_sys", true)) }
-        var nightModeEnabled by rememberSaveable { mutableStateOf(prefs.getBoolean("night_mode_enabled", false)) }
+        var nightModeFollowSys by rememberSaveable { mutableStateOf(prefs.getBoolean("night_mode_follow_sys", false)) }
+        var nightModeEnabled by rememberSaveable { mutableStateOf(prefs.getBoolean("night_mode_enabled", true)) }
         
         val isDynamicColorSupport = Build.VERSION.SDK_INT >= Build.VERSION_CODES.S
-        var useSystemDynamicColor by rememberSaveable { mutableStateOf(prefs.getBoolean("use_system_color_theme", true)) }
+        var useSystemDynamicColor by rememberSaveable { mutableStateOf(prefs.getBoolean("use_system_color_theme", false)) }
 
         val refreshThemeObserver by refreshTheme.observeAsState(false)
         if (refreshThemeObserver) {
-            nightModeFollowSys = prefs.getBoolean("night_mode_follow_sys", true)
-            nightModeEnabled = prefs.getBoolean("night_mode_enabled", false)
-            useSystemDynamicColor = prefs.getBoolean("use_system_color_theme", true)
+            nightModeFollowSys = prefs.getBoolean("night_mode_follow_sys", false)
+            nightModeEnabled = prefs.getBoolean("night_mode_enabled", true)
+            useSystemDynamicColor = prefs.getBoolean("use_system_color_theme", false)
         }
 
         // Background Launchers
@@ -872,13 +872,13 @@ fun SettingScreen(navigator: DestinationsNavigator) {
             val showUseSystemColor = isDynamicColorSupport && (matchAppearance || shouldShow(useSystemColorTitle, useSystemColorSummary))
 
             val customColorTitle = stringResource(id = R.string.settings_custom_color_theme)
-            val colorMode = prefs.getString("custom_color", "blue")
+            val colorMode = prefs.getString("custom_color", "light_blue")
             val customColorValue = stringResource(colorNameToString(colorMode.toString()))
             val showCustomColor = (!isDynamicColorSupport || !useSystemDynamicColor) && (matchAppearance || shouldShow(customColorTitle, customColorValue))
 
             // Home Layout
             val homeLayoutTitle = stringResource(id = R.string.settings_home_layout_style)
-            val currentStyle = prefs.getString("home_layout_style", "focus")
+            val currentStyle = prefs.getString("home_layout_style", "kernelsu")
             val homeLayoutValue = stringResource(homeLayoutStyleToString(currentStyle.toString()))
             val showHomeLayout = matchAppearance || shouldShow(homeLayoutTitle, homeLayoutValue)
 
@@ -3267,7 +3267,7 @@ fun HomeLayoutChooseDialog(showDialog: MutableState<Boolean>) {
                     modifier = Modifier.padding(bottom = 16.dp)
                 )
                 
-                val currentStyle = prefs.getString("home_layout_style", "focus")
+                val currentStyle = prefs.getString("home_layout_style", "kernelsu")
                 
                 Surface(
                     shape = RoundedCornerShape(12.dp),

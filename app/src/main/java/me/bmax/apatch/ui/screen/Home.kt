@@ -152,7 +152,7 @@ fun HomeScreen(navigator: DestinationsNavigator) {
         showPatchFloatAction = false
     }
 
-    val homeLayout = APApplication.sharedPreferences.getString("home_layout_style", "focus")
+    val homeLayout = APApplication.sharedPreferences.getString("home_layout_style", "kernelsu")
 
     Scaffold(topBar = {
         TopBar(onInstallClick = dropUnlessResumed {
@@ -656,8 +656,8 @@ private fun KStatusCard(
     }
 
     val prefs = APApplication.sharedPreferences
-    val darkThemeFollowSys = prefs.getBoolean("night_mode_follow_sys", true)
-    val nightModeEnabled = prefs.getBoolean("night_mode_enabled", false)
+    val darkThemeFollowSys = prefs.getBoolean("night_mode_follow_sys", false)
+    val nightModeEnabled = prefs.getBoolean("night_mode_enabled", true)
     val isDarkTheme = if (darkThemeFollowSys) {
         isSystemInDarkTheme()
     } else {

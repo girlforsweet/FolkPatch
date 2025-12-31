@@ -18,7 +18,7 @@ object BackgroundConfig {// State
         private set
     var isCustomBackgroundEnabled: Boolean by mutableStateOf(true)
         private set
-    var customBackgroundOpacity: Float by mutableStateOf(0.7f)
+    var customBackgroundOpacity: Float by mutableStateOf(0.05f)
         private set
     var customBackgroundBlur: Float by mutableStateOf(0f)
         private set
@@ -344,12 +344,12 @@ object BackgroundConfig {// State
         val prefs = context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE)
         val uri = prefs.getString(KEY_CUSTOM_BACKGROUND_URI, "background.png")
         val enabled = prefs.getBoolean(KEY_CUSTOM_BACKGROUND_ENABLED, true)
-        val opacity = prefs.getFloat(KEY_CUSTOM_BACKGROUND_OPACITY, 0.23f)
+        val opacity = prefs.getFloat(KEY_CUSTOM_BACKGROUND_OPACITY, 0.05f)
         val blur = prefs.getFloat(KEY_CUSTOM_BACKGROUND_BLUR, 0f)
         val dim = prefs.getFloat(KEY_CUSTOM_BACKGROUND_DIM, 0.0f)
         val dualDimEnabled = prefs.getBoolean(KEY_CUSTOM_BACKGROUND_DUAL_DIM_ENABLED, true)
         val dayDim = prefs.getFloat(KEY_CUSTOM_BACKGROUND_DAY_DIM, 0.0f)
-        val nightDim = prefs.getFloat(KEY_CUSTOM_BACKGROUND_NIGHT_DIM, 0.75f)
+        val nightDim = prefs.getFloat(KEY_CUSTOM_BACKGROUND_NIGHT_DIM, 0.05f)
         
         val videoUri = prefs.getString(KEY_VIDEO_BACKGROUND_URI, null)
         val videoEnabled = prefs.getBoolean(KEY_VIDEO_BACKGROUND_ENABLED, false)
@@ -360,8 +360,8 @@ object BackgroundConfig {// State
         val gridOpacity = prefs.getFloat(KEY_GRID_WORKING_CARD_BACKGROUND_OPACITY, 1.0f)
         val gridDim = prefs.getFloat(KEY_GRID_WORKING_CARD_BACKGROUND_DIM, 0.3f)
         val gridDualOpacityEnabled = prefs.getBoolean(KEY_GRID_WORKING_CARD_DUAL_OPACITY_ENABLED, false)
-        val gridDayOpacity = prefs.getFloat(KEY_GRID_WORKING_CARD_BACKGROUND_DAY_OPACITY, gridOpacity)
-        val gridNightOpacity = prefs.getFloat(KEY_GRID_WORKING_CARD_BACKGROUND_NIGHT_OPACITY, gridOpacity)
+        val gridDayOpacity = prefs.getFloat(KEY_GRID_WORKING_CARD_BACKGROUND_DAY_OPACITY, 1.0f)
+        val gridNightOpacity = prefs.getFloat(KEY_GRID_WORKING_CARD_BACKGROUND_NIGHT_OPACITY, 1.0f)
         val gridCheckHidden = prefs.getBoolean(KEY_GRID_WORKING_CARD_CHECK_HIDDEN, false)
         val gridTextHidden = prefs.getBoolean(KEY_GRID_WORKING_CARD_TEXT_HIDDEN, false)
         val gridModeHidden = prefs.getBoolean(KEY_GRID_WORKING_CARD_MODE_HIDDEN, false)
@@ -418,12 +418,12 @@ object BackgroundConfig {// State
         // Default to custom background enabled with "background.png"
         customBackgroundUri = "background.png"
         isCustomBackgroundEnabled = true
-        customBackgroundOpacity = 0.23f
+        customBackgroundOpacity = 0.05f
         customBackgroundBlur = 0f
         customBackgroundDim = 0.0f
         isDualBackgroundDimEnabled = true
         customBackgroundDayDim = 0.0f
-        customBackgroundNightDim = 0.75f
+        customBackgroundNightDim = 0.05f
         
         videoBackgroundUri = null
         isVideoBackgroundEnabled = false

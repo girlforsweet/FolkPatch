@@ -58,8 +58,8 @@ import me.bmax.apatch.ui.screen.BottomBarDestination
 fun BackgroundLayer(currentRoute: String? = null) {
     val context = LocalContext.current
     val prefs = APApplication.sharedPreferences
-    val darkThemeFollowSys = prefs.getBoolean("night_mode_follow_sys", true)
-    val nightModeEnabled = prefs.getBoolean("night_mode_enabled", false)
+    val darkThemeFollowSys = prefs.getBoolean("night_mode_follow_sys", false)
+    val nightModeEnabled = prefs.getBoolean("night_mode_enabled", true)
     val folkXEngineEnabled = prefs.getBoolean("folkx_engine_enabled", true)
     val folkXAnimationType = prefs.getString("folkx_animation_type", "linear")
     val folkXAnimationSpeed = prefs.getFloat("folkx_animation_speed", 1.0f)

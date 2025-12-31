@@ -85,7 +85,7 @@ fun APatchTheme(
         mutableStateOf(
             prefs.getBoolean(
                 "night_mode_follow_sys",
-                true
+                false
             )
         )
     }
@@ -102,21 +102,21 @@ fun APatchTheme(
         mutableStateOf(
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) prefs.getBoolean(
                 "use_system_color_theme",
-                true
+                false
             ) else false
         )
     }
-    var customColorScheme by remember { mutableStateOf(prefs.getString("custom_color", "blue")) }
+    var customColorScheme by remember { mutableStateOf(prefs.getString("custom_color", "indigo")) }
 
     val refreshThemeObserver by refreshTheme.observeAsState(false)
     if (refreshThemeObserver == true) {
-        darkThemeFollowSys = prefs.getBoolean("night_mode_follow_sys", true)
-        nightModeEnabled = prefs.getBoolean("night_mode_enabled", false)
+        darkThemeFollowSys = prefs.getBoolean("night_mode_follow_sys", false)
+        nightModeEnabled = prefs.getBoolean("night_mode_enabled", true)
         dynamicColor = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) prefs.getBoolean(
             "use_system_color_theme",
-            true
+            false
         ) else false
-        customColorScheme = prefs.getString("custom_color", "blue")
+        customColorScheme = prefs.getString("custom_color", "indigo")
         refreshTheme.postValue(false)
     }
 

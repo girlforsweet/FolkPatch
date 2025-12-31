@@ -302,6 +302,19 @@ class APApplication : Application(), Thread.UncaughtExceptionHandler, ImageLoade
         // TODO: 2. remove all usage of superkey
         Log.d(TAG, "Initializing SharedPreferences...")
         sharedPreferences = getSharedPreferences(SP_NAME, Context.MODE_PRIVATE)
+        
+        // 初始化默认主题设置 - 只在第一次安装时设置
+        if (!sharedPreferences.contains("app_initialized")) {
+            sharedPreferences.edit()
+                .putBoolean("app_initialized", true)
+                .putBoolean("night_mode_enabled", true)
+                .putBoolean("night_mode_follow_sys", false)
+                .putBoolean("use_system_color_theme", false)
+                .putString("custom_color", "indigo")
+                .putString("home_layout_style", "kernelsu")
+                .apply()
+        }
+        
         APatchKeyHelper.setSharedPreferences(sharedPreferences)
         me.bmax.apatch.util.LauncherIconUtils.applySaved(this, sharedPreferences.getString("launcher_icon_variant", "default"))
         Log.d(TAG, "Reading superKey...")
