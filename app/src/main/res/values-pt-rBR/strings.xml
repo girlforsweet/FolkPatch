@@ -518,6 +518,8 @@
     <string name="msg_biometric">Por favor, verifique sua identidade biométrica</string>
     <string name="settings_biometric_login">Login Biométrico</string>
     <string name="settings_biometric_login_summary">Exigir autenticação biométrica ao abrir o app</string>
+    <string name="settings_strong_biometric">Autenticação Biométrica Forte</string>
+    <string name="settings_strong_biometric_summary">Exigir autenticação para instalar/desinstalar/desativar módulos</string>
 
     <!-- Theme Store Strings -->
     <string name="theme_store_title">Loja de Temas</string>
@@ -622,4 +624,7 @@
     <string name="backup_success">Backup bem-sucedido</string>
     <string name="restore_success">Restauração bem-sucedida</string>
 
+    <!-- Badge Count Settings -->
+    <string name="enable_badge_count">Ativar contador de selos</string>
+    <string name="enable_badge_count_summary">Ativar contador de selos para superusuário e módulos do sistema na barra de navegação</string>
 </resources>

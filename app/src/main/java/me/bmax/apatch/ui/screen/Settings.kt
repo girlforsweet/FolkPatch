@@ -55,6 +55,7 @@ import androidx.compose.material.icons.filled.TextFields
 import androidx.compose.material.icons.filled.PlayArrow
 import androidx.compose.material.icons.filled.Pause
 import androidx.compose.material.icons.filled.Translate
+import androidx.compose.material.icons.filled.VerifiedUser
 import androidx.compose.material3.IconButton
 import androidx.compose.runtime.collectAsState
 import androidx.compose.material.icons.filled.Visibility
@@ -72,6 +73,7 @@ import androidx.compose.material.icons.filled.Extension
 import androidx.compose.material.icons.filled.Archive
 import androidx.compose.material.icons.filled.Security
 import androidx.compose.material.icons.filled.ViewQuilt
+import androidx.compose.material.icons.filled.Notifications
 import me.bmax.apatch.ui.component.CheckboxItem
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 import com.ramcosta.composedestinations.generated.destinations.ThemeStoreScreenDestination
@@ -523,6 +525,7 @@ fun SettingScreen(navigator: DestinationsNavigator) {
         var hideSuPath by rememberSaveable { mutableStateOf(prefs.getBoolean("hide_su_path", false)) }
         var hideKpatchVersion by rememberSaveable { mutableStateOf(prefs.getBoolean("hide_kpatch_version", false)) }
         var hideFingerprint by rememberSaveable { mutableStateOf(prefs.getBoolean("hide_fingerprint", false)) }
+        var enableBadgeCount by rememberSaveable { mutableStateOf(prefs.getBoolean("enable_badge_count", true)) }
         var folkXEngineEnabled by rememberSaveable { mutableStateOf(prefs.getBoolean("folkx_engine_enabled", true)) }
 
         // Module
@@ -1828,7 +1831,11 @@ fun SettingScreen(navigator: DestinationsNavigator) {
             val hideFingerprintSummary = stringResource(id = R.string.home_hide_fingerprint_summary)
             val showHideFingerprint = matchBehavior || shouldShow(hideFingerprintTitle, hideFingerprintSummary)
 
-            val showBehaviorCategory = showWebDebugging || showInstallConfirm || showDisableModules || showStayOnPage || showHideApatch || showHideSu || showHideKpatch || showHideFingerprint
+            val badgeCountTitle = stringResource(id = R.string.enable_badge_count)
+            val badgeCountSummary = stringResource(id = R.string.enable_badge_count_summary)
+            val showBadgeCount = matchBehavior || shouldShow(badgeCountTitle, badgeCountSummary)
+
+            val showBehaviorCategory = showWebDebugging || showInstallConfirm || showDisableModules || showStayOnPage || showHideApatch || showHideSu || showHideKpatch || showHideFingerprint || showBadgeCount
 
             if (showBehaviorCategory) {
                 SettingsCategory(icon = Icons.Filled.TouchApp, title = behaviorTitle, isSearching = searchText.isNotEmpty()) {
@@ -1932,6 +1939,19 @@ fun SettingScreen(navigator: DestinationsNavigator) {
                             hideFingerprint = it
                         }
                     }
+
+                    // Badge Count
+                    if (showBadgeCount) {
+                        SwitchItem(
+                            icon = Icons.Filled.Notifications,
+                            title = badgeCountTitle,
+                            summary = badgeCountSummary,
+                            checked = enableBadgeCount
+                        ) {
+                            prefs.edit { putBoolean("enable_badge_count", it) }
+                            enableBadgeCount = it
+                        }
+                    }
                 }
             }
 
@@ -1957,15 +1977,48 @@ fun SettingScreen(navigator: DestinationsNavigator) {
                 SettingsCategory(icon = Icons.Filled.Security, title = securityTitle, isSearching = searchText.isNotEmpty()) {
                     // Biometric
                     if (showBiometric) {
+                        val scope = rememberCoroutineScope()
+                        val strongBiometricTitle = stringResource(id = R.string.settings_strong_biometric)
+                        val strongBiometricSummary = stringResource(id = R.string.settings_strong_biometric_summary)
+                        var strongBiometric by rememberSaveable { mutableStateOf(prefs.getBoolean("strong_biometric", false)) }
+
                         SwitchItem(
                             icon = Icons.Filled.Fingerprint,
                             title = biometricTitle,
                             summary = biometricSummary,
                             checked = biometricLogin,
-                            onCheckedChange = {
-                                prefs.edit { putBoolean("biometric_login", it) }
-                                biometricLogin = it
+                            onCheckedChange = { checked ->
+                                if (!checked && biometricLogin) {
+                                    scope.launch {
+                                        val activity = context as? androidx.fragment.app.FragmentActivity
+                                        if (activity != null) {
+                                            if (me.bmax.apatch.util.BiometricUtils.authenticate(activity)) {
+                                                prefs.edit { putBoolean("biometric_login", false) }
+                                                biometricLogin = false
+                                            }
+                                        } else {
+                                            prefs.edit { putBoolean("biometric_login", false) }
+                                            biometricLogin = false
+                                        }
+                                    }
+                                } else {
+                                    prefs.edit { putBoolean("biometric_login", checked) }
+                                    biometricLogin = checked
+                                }
                             })
+
+                        if (biometricLogin) {
+                            SwitchItem(
+                                icon = Icons.Filled.VerifiedUser,
+                                title = strongBiometricTitle,
+                                summary = strongBiometricSummary,
+                                checked = strongBiometric,
+                                onCheckedChange = {
+                                    prefs.edit { putBoolean("strong_biometric", it) }
+                                    strongBiometric = it
+                                }
+                            )
+                        }
                     }
 
                     // Clear Key

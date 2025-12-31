@@ -513,6 +513,8 @@
     <string name="msg_biometric">请验证您的生物识别身份</string>
     <string name="settings_biometric_login">生物识别认证</string>
     <string name="settings_biometric_login_summary">打开应用时要求生物识别认证</string>
+    <string name="settings_strong_biometric">强力生物识别</string>
+    <string name="settings_strong_biometric_summary">安装、卸载或禁用模块时需要验证</string>
 
     <!-- Theme Store Strings -->
     <string name="theme_store_title">主题商店</string>
@@ -637,4 +639,8 @@
     <string name="acefs_save_success">配置保存成功</string>
     <string name="acefs_save_failed">配置保存失败</string>
     <string name="acefs_save_config">保存配置</string>
+
+    <!-- Badge Count Settings -->
+    <string name="enable_badge_count">启用角标统计</string>
+    <string name="enable_badge_count_summary">为超级用户和系统模块启用角标统计功能</string>
 </resources>

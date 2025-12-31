@@ -512,6 +512,8 @@
     <string name="msg_biometric">Пожалуйста, подтвердите свою биометрическую личность</string>
     <string name="settings_biometric_login">Биометрическая аутентификация</string>
     <string name="settings_biometric_login_summary">Требовать биометрическую аутентификацию при открытии приложения</string>
+    <string name="settings_strong_biometric">Сильная биометрическая аутентификация</string>
+    <string name="settings_strong_biometric_summary">Требовать аутентификацию при установке/удалении/отключении модулей</string>
 
     <!-- Theme Store Strings -->
     <string name="theme_store_title">Магазин тем</string>
@@ -618,4 +620,7 @@
     <string name="backup_success">Резервное копирование успешно</string>
     <string name="restore_success">Восстановление успешно</string>
 
+    <!-- Badge Count Settings -->
+    <string name="enable_badge_count">Включить счетчик значков</string>
+    <string name="enable_badge_count_summary">Включить счетчик значков для суперпользователя и системных модулей на панели навигации</string>
 </resources>

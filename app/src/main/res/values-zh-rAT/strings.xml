@@ -502,6 +502,8 @@
     <string name="msg_biometric">请验证您的天使印鉴</string>
     <string name="settings_biometric_login">天使印鉴认证</string>
     <string name="settings_biometric_login_summary">开启天使工坊时需要进行天使印鉴认证</string>
+    <string name="settings_strong_biometric">强力天使印鉴</string>
+    <string name="settings_strong_biometric_summary">施展、解除或封印魔法阵时需要认证</string>
 
     <!-- Theme Store Strings -->
     <string name="theme_store_title">绮幻衣装魔盒</string>
@@ -617,4 +619,7 @@
     <string name="backup_success">圣光记忆封存成功</string>
     <string name="restore_success">圣光记忆取出成功</string>
 
+    <!-- Badge Count Settings -->
+    <string name="enable_badge_count">魔法印记</string>
+    <string name="enable_badge_count_summary">在天使导航台上显示灵术徽章与魔法模组数量</string>
 </resources>

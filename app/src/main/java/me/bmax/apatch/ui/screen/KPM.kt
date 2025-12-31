@@ -119,6 +119,8 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.compose.runtime.getValue
 
+import me.bmax.apatch.util.BiometricUtils
+
 private const val TAG = "KernelPatchModule"
 private lateinit var targetKPMToControl: KPModel.KPMInfo
 
@@ -173,6 +175,20 @@ fun KPModuleScreen(navigator: DestinationsNavigator) {
     }
 
     val kpModuleListState = rememberLazyListState()
+
+    val scope = rememberCoroutineScope()
+    suspend fun checkStrongBiometric(): Boolean {
+        val prefs = APApplication.sharedPreferences
+        if (prefs.getBoolean("strong_biometric", false) && prefs.getBoolean("biometric_login", false)) {
+            val activity = context as? androidx.fragment.app.FragmentActivity
+            return if (activity != null) {
+                BiometricUtils.authenticate(activity)
+            } else {
+                true
+            }
+        }
+        return true
+    }
 
     Scaffold(topBar = {
         TopBar(navigator)
@@ -250,26 +266,29 @@ fun KPModuleScreen(navigator: DestinationsNavigator) {
                     options.forEach { label ->
                         WallpaperAwareDropdownMenuItem(text = { Text(label) }, onClick = {
                             expanded = false
-                            when (label) {
-                                moduleEmbed -> {
-                                    navigator.navigate(PatchesDestination(PatchesViewModel.PatchMode.PATCH_AND_INSTALL))
-                                }
+                            scope.launch {
+                                if (!checkStrongBiometric()) return@launch
+                                when (label) {
+                                    moduleEmbed -> {
+                                        navigator.navigate(PatchesDestination(PatchesViewModel.PatchMode.PATCH_AND_INSTALL))
+                                    }
 
-                                moduleInstall -> {
+                                    moduleInstall -> {
 //                                        val intent = Intent(Intent.ACTION_GET_CONTENT)
 //                                        intent.type = "application/zip"
 //                                        selectZipLauncher.launch(intent)
-                                    Toast.makeText(
-                                        context,
-                                        "Under development",
-                                        Toast.LENGTH_SHORT
-                                    ).show()
-                                }
+                                        Toast.makeText(
+                                            context,
+                                            "Under development",
+                                            Toast.LENGTH_SHORT
+                                        ).show()
+                                    }
 
-                                moduleLoad -> {
-                                    val intent = Intent(Intent.ACTION_GET_CONTENT)
-                                    intent.type = "*/*"
-                                    selectKpmLauncher.launch(intent)
+                                    moduleLoad -> {
+                                        val intent = Intent(Intent.ACTION_GET_CONTENT)
+                                        intent.type = "*/*"
+                                        selectKpmLauncher.launch(intent)
+                                    }
                                 }
                             }
                         })
@@ -285,7 +304,8 @@ fun KPModuleScreen(navigator: DestinationsNavigator) {
                 .padding(innerPadding)
                 .fillMaxSize(),
             state = kpModuleListState,
-            showMoreModuleInfo = showMoreModuleInfo
+            showMoreModuleInfo = showMoreModuleInfo,
+            checkStrongBiometric = ::checkStrongBiometric
         )
     }
 
@@ -503,7 +523,11 @@ fun KPMControlDialog(showDialog: MutableState<Boolean>) {
 @OptIn(ExperimentalMaterialApi::class, ExperimentalMaterial3Api::class)
 @Composable
 private fun KPModuleList(
-    viewModel: KPModuleViewModel, modifier: Modifier = Modifier, state: LazyListState, showMoreModuleInfo: Boolean
+    viewModel: KPModuleViewModel,
+    modifier: Modifier = Modifier,
+    state: LazyListState,
+    showMoreModuleInfo: Boolean,
+    checkStrongBiometric: suspend () -> Boolean
 ) {
     val moduleStr = stringResource(id = R.string.kpm)
     val moduleUninstallConfirm = stringResource(id = R.string.kpm_unload_confirm)
@@ -519,6 +543,7 @@ private fun KPModuleList(
     }
 
     suspend fun onModuleUninstall(module: KPModel.KPMInfo) {
+        if (!checkStrongBiometric()) return
         val confirmResult = confirmDialog.awaitConfirm(
             moduleStr,
             content = moduleUninstallConfirm.format(module.name),
@@ -581,8 +606,12 @@ private fun KPModuleList(
                                 scope.launch { onModuleUninstall(module) }
                             },
                             onControl = {
-                                targetKPMToControl = module
-                                showKPMControlDialog.value = true
+                                scope.launch {
+                                    if (checkStrongBiometric()) {
+                                        targetKPMToControl = module
+                                        showKPMControlDialog.value = true
+                                    }
+                                }
                             },
                             showMoreModuleInfo = showMoreModuleInfo
                         )

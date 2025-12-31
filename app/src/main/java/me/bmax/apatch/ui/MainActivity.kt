@@ -23,6 +23,8 @@ import androidx.compose.animation.slideInVertically
 import androidx.compose.animation.slideOutHorizontally
 import androidx.compose.animation.slideOutVertically
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.Badge
+import androidx.compose.material3.BadgedBox
 import androidx.compose.material3.Icon
 import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarItem
@@ -38,6 +40,7 @@ import androidx.compose.runtime.key
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.collectAsState
 import android.content.SharedPreferences
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -107,6 +110,7 @@ import me.bmax.apatch.ui.component.rememberLoadingDialog
 import android.widget.Toast
 
 import me.bmax.apatch.ui.screen.ThemeImportDialog
+import me.bmax.apatch.util.BiometricUtils
 
 class MainActivity : AppCompatActivity() {
 
@@ -197,7 +201,8 @@ class MainActivity : AppCompatActivity() {
                     androidx.biometric.BiometricManager.Authenticators.DEVICE_CREDENTIAL
         ) == androidx.biometric.BiometricManager.BIOMETRIC_SUCCESS
 
-        if (biometricLogin && canAuthenticate) {
+        val isShareIntent = intent.action == Intent.ACTION_SEND || intent.action == Intent.ACTION_SEND_MULTIPLE
+        if (biometricLogin && canAuthenticate && !isShareIntent) {
             isLocked.value = true
             val biometricPrompt = androidx.biometric.BiometricPrompt(
                 this,
@@ -290,6 +295,18 @@ class MainActivity : AppCompatActivity() {
                 }
             }
 
+            // Start badge count refresh coroutine
+            LaunchedEffect(Unit) {
+                while (true) {
+                    try {
+                        me.bmax.apatch.util.AppData.DataRefreshManager.refreshData()
+                    } catch (e: Exception) {
+                        android.util.Log.e("BadgeCount", "Failed to refresh badge data", e)
+                    }
+                    delay(5000)  // Refresh every 5 seconds
+                }
+            }
+
             APatchThemeWithBackground(navController = navController) {
                 
                 val showUpdateDialog = remember { mutableStateOf(false) }
@@ -324,6 +341,9 @@ class MainActivity : AppCompatActivity() {
                                 }
                             }
                         } else {
+                            if (prefs.getBoolean("strong_biometric", false) && prefs.getBoolean("biometric_login", false)) {
+                                if (!BiometricUtils.authenticate(this@MainActivity)) return@LaunchedEffect
+                            }
                             navigator.navigate(InstallScreenDestination(uri, MODULE_TYPE.APM))
                         }
                     }
@@ -615,6 +635,13 @@ private fun BottomBar(navController: NavHostController) {
     var showNavKpm by remember { mutableStateOf(prefs.getBoolean("show_nav_kpm", true)) }
     var showNavSuperUser by remember { mutableStateOf(prefs.getBoolean("show_nav_superuser", true)) }
 
+    // Badge count settings - default enabled
+    val enableBadgeCount by remember { mutableStateOf(prefs.getBoolean("enable_badge_count", true)) }
+
+    // Collect badge counts from AppData
+    val superuserCount by me.bmax.apatch.util.AppData.DataRefreshManager.superuserCount.collectAsState()
+    val apmModuleCount by me.bmax.apatch.util.AppData.DataRefreshManager.apmModuleCount.collectAsState()
+
     DisposableEffect(Unit) {
         val listener = SharedPreferences.OnSharedPreferenceChangeListener { sharedPrefs, key ->
             when (key) {
@@ -672,10 +699,26 @@ private fun BottomBar(navController: NavHostController) {
                                 }
                             },
                             icon = {
-                                if (isCurrentDestOnBackStack) {
-                                    Icon(destination.iconSelected, stringResource(destination.label))
-                                } else {
-                                    Icon(destination.iconNotSelected, stringResource(destination.label))
+                                val badgeContent = when {
+                                    destination == BottomBarDestination.SuperUser && enableBadgeCount -> superuserCount
+                                    destination == BottomBarDestination.AModule && enableBadgeCount -> apmModuleCount
+                                    else -> 0
+                                }
+
+                                BadgedBox(
+                                    badge = {
+                                        if (badgeContent > 0) {
+                                            Badge(containerColor = MaterialTheme.colorScheme.secondary) {
+                                                Text(text = badgeContent.toString())
+                                            }
+                                        }
+                                    }
+                                ) {
+                                    if (isCurrentDestOnBackStack) {
+                                        Icon(destination.iconSelected, stringResource(destination.label))
+                                    } else {
+                                        Icon(destination.iconNotSelected, stringResource(destination.label))
+                                    }
                                 }
                             },
                             label = {

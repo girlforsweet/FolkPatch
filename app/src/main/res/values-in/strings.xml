@@ -492,6 +492,8 @@
     <string name="msg_biometric">Harap konfirmasi identitas biometrik Anda</string>
     <string name="settings_biometric_login">Auntentikasi Biometrik</string>
     <string name="settings_biometric_login_summary">Wajibkan Autentikasi biometrik saat membuka aplikasi</string>
+    <string name="settings_strong_biometric">Autentikasi Biometrik Kuat</string>
+    <string name="settings_strong_biometric_summary">Memerlukan autentikasi saat menginstal/menghapus/menonaktifkan modul</string>
 
     <!-- Theme Store Strings -->
     <string name="theme_store_title">Toko Tema</string>
@@ -598,4 +600,7 @@
     <string name="backup_success">Pencadangan Berhasil</string>
     <string name="restore_success">Pemulihan Berhasil</string>
 
+    <!-- Badge Count Settings -->
+    <string name="enable_badge_count">Aktifkan Hitung Badge</string>
+    <string name="enable_badge_count_summary">Aktifkan hitung badge untuk superuser dan modul sistem pada bilah navigasi</string>
 </resources>

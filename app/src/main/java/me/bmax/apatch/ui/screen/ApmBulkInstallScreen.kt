@@ -64,6 +64,7 @@ import me.bmax.apatch.R
 import me.bmax.apatch.util.installModule
 import me.bmax.apatch.util.reboot
 
+import me.bmax.apatch.util.BiometricUtils
 import me.bmax.apatch.util.BulkInstallManager
 import com.ramcosta.composedestinations.generated.destinations.InstallScreenDestination
 
@@ -329,53 +330,62 @@ fun ApmBulkInstallScreen(navigator: DestinationsNavigator, initialUris: ArrayLis
             
             Button(
                 onClick = {
-                    val prefs = APApplication.sharedPreferences
-                    val batchInstallFullProcess = prefs.getBoolean("apm_batch_install_full_process", false)
-
-                    if (batchInstallFullProcess) {
-                        val uris = ArrayList(moduleUris)
-                        BulkInstallManager.setQueue(uris)
-                        val first = BulkInstallManager.popNext()
-                        if (first != null) {
-                            navigator.navigate(InstallScreenDestination(first, MODULE_TYPE.APM))
-                        }
-                    } else {
-                        showLogDialog = true
-                        isInstalling = true
-                        val logStart = context.getString(R.string.apm_bulk_install_log_start)
-                        installLog = "$logStart\n"
-                        scope.launch(Dispatchers.IO) {
-                            moduleUris.forEachIndexed { index, uri ->
-                                val fileName = getFileName(context, uri)
-                                val installingMsg = context.getString(R.string.apm_bulk_install_log_installing, fileName)
-                                withContext(Dispatchers.Main) {
-                                    installLog += "\n>>> $installingMsg\n"
-                                }
-                                
-                                installModule(
-                                    uri = uri,
-                                    type = MODULE_TYPE.APM,
-                                    onFinish = { success ->
-                                        // handled via return value in blocking call
-                                    },
-                                    onStdout = { msg ->
-                                        // append log? might be too much text update on Main thread if fast
-                                        // for now let's skip detailed logs to avoid UI lag, or just append
-                                    },
-                                    onStderr = { msg ->
-                                        // same
-                                    }
-                                )
-                                
-                                val installedMsg = context.getString(R.string.apm_bulk_install_log_installed, fileName)
-                                withContext(Dispatchers.Main) {
-                                    installLog += "$installedMsg\n"
-                                }
+                    scope.launch {
+                        val prefs = APApplication.sharedPreferences
+                        if (prefs.getBoolean("strong_biometric", false) && prefs.getBoolean("biometric_login", false)) {
+                            val activity = context as? androidx.fragment.app.FragmentActivity
+                            if (activity != null) {
+                                if (!BiometricUtils.authenticate(activity)) return@launch
                             }
-                            val doneMsg = context.getString(R.string.apm_bulk_install_log_done)
-                            withContext(Dispatchers.Main) {
-                                installLog += "\n$doneMsg"
-                                isInstalling = false
+                        }
+
+                        val batchInstallFullProcess = prefs.getBoolean("apm_batch_install_full_process", false)
+
+                        if (batchInstallFullProcess) {
+                            val uris = ArrayList(moduleUris)
+                            BulkInstallManager.setQueue(uris)
+                            val first = BulkInstallManager.popNext()
+                            if (first != null) {
+                                navigator.navigate(InstallScreenDestination(first, MODULE_TYPE.APM))
+                            }
+                        } else {
+                            showLogDialog = true
+                            isInstalling = true
+                            val logStart = context.getString(R.string.apm_bulk_install_log_start)
+                            installLog = "$logStart\n"
+                            launch(Dispatchers.IO) {
+                                moduleUris.forEachIndexed { index, uri ->
+                                    val fileName = getFileName(context, uri)
+                                    val installingMsg = context.getString(R.string.apm_bulk_install_log_installing, fileName)
+                                    withContext(Dispatchers.Main) {
+                                        installLog += "\n>>> $installingMsg\n"
+                                    }
+
+                                    installModule(
+                                        uri = uri,
+                                        type = MODULE_TYPE.APM,
+                                        onFinish = { success ->
+                                            // handled via return value in blocking call
+                                        },
+                                        onStdout = { msg ->
+                                            // append log? might be too much text update on Main thread if fast
+                                            // for now let's skip detailed logs to avoid UI lag, or just append
+                                        },
+                                        onStderr = { msg ->
+                                            // same
+                                        }
+                                    )
+
+                                    val installedMsg = context.getString(R.string.apm_bulk_install_log_installed, fileName)
+                                    withContext(Dispatchers.Main) {
+                                        installLog += "$installedMsg\n"
+                                    }
+                                }
+                                val doneMsg = context.getString(R.string.apm_bulk_install_log_done)
+                                withContext(Dispatchers.Main) {
+                                    installLog += "\n$doneMsg"
+                                    isInstalling = false
+                                }
                             }
                         }
                     }

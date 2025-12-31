@@ -500,6 +500,8 @@
     <string name="msg_biometric">请核验本命仙纹</string>
     <string name="settings_biometric_login">仙纹核验</string>
     <string name="settings_biometric_login_summary">启府需验本命仙纹</string>
+    <string name="settings_strong_biometric">强力本命仙纹</string>
+    <string name="settings_strong_biometric_summary">启用、禁用或封印仙符时需要验证</string>
 
     <!-- Theme Store Strings -->
     <string name="theme_store_title">仙府色章阁</string>
@@ -610,4 +612,7 @@
     <string name="su_restore_list">还原至尊密钥</string>
     <string name="backup_success">备份成功</string>
     <string name="restore_success">还原成功</string>
+    <!-- Badge Count Settings -->
+    <string name="enable_badge_count">灵印显法</string>
+    <string name="enable_badge_count_summary">于法界台灵镜上显示道友之数与仙术模块之数</string>
 </resources>

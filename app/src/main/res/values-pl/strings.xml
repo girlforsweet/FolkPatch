@@ -510,6 +510,8 @@
     <string name="msg_biometric">Proszę zweryfikować swoją tożsamość biometryczną</string>
     <string name="settings_biometric_login">Uwierzytelnianie biometryczne</string>
     <string name="settings_biometric_login_summary">Wymagaj uwierzytelniania biometrycznego przy otwieraniu aplikacji</string>
+    <string name="settings_strong_biometric">Silne uwierzytelnianie biometryczne</string>
+    <string name="settings_strong_biometric_summary">Wymagaj uwierzytelniania przy instalowaniu/deinstalowaniu/wyłączaniu modułów</string>
 
     <!-- Theme Store Strings -->
     <string name="theme_store_title">Sklep motywów</string>
@@ -616,4 +618,7 @@
     <string name="backup_success">Kopia zapasowana pomyślnie</string>
     <string name="restore_success">Przywracanie pomyślnie</string>
 
+    <!-- Badge Count Settings -->
+    <string name="enable_badge_count">Włącz licznik odznak</string>
+    <string name="enable_badge_count_summary">Włącz licznik odznak dla superużytkownika i modułów systemowych na pasku nawigacyjnym</string>
 </resources>

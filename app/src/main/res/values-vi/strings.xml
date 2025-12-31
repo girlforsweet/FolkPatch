@@ -506,6 +506,8 @@
     <string name="msg_biometric">Vui lòng xác minh danh tính sinh trắc học của bạn</string>
     <string name="settings_biometric_login">Xác thực sinh trắc học</string>
     <string name="settings_biometric_login_summary">Yêu cầu xác thực sinh trắc học khi mở ứng dụng</string>
+    <string name="settings_strong_biometric">Xác thực sinh trắc học mạnh</string>
+    <string name="settings_strong_biometric_summary">Yêu cầu xác thực khi cài đặt/gỡ cài/tắt module</string>
 
     <!-- Theme Store Strings -->
     <string name="theme_store_title">Cửa hàng chủ đề</string>
@@ -614,4 +616,7 @@
     <string name="backup_success">Sao lưu thành công</string>
     <string name="restore_success">Khôi phục thành công</string>
 
+    <!-- Badge Count Settings -->
+    <string name="enable_badge_count">Bật đếm huy hiệu</string>
+    <string name="enable_badge_count_summary">Bật đếm huy hiệu cho siêu người dùng và mô-đun hệ thống trên thanh điều hướng</string>
 </resources>

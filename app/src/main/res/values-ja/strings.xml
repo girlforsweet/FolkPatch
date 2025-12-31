@@ -465,6 +465,8 @@
     <string name="msg_biometric">生体認証を確認してください</string>
     <string name="settings_biometric_login">生体認証</string>
     <string name="settings_biometric_login_summary">アプリを開く際に生体認証を要求する</string>
+    <string name="settings_strong_biometric">強力生体認証</string>
+    <string name="settings_strong_biometric_summary">モジュールのインストール/アンインストール/無効化時に認証を要求する</string>
 
     <!-- Theme Store Strings -->
     <string name="theme_store_title">テーマストア</string>
@@ -577,4 +579,7 @@
     <string name="backup_success">バックアップ成功</string>
     <string name="restore_success">復元成功</string>
 
+    <!-- Badge Count Settings -->
+    <string name="enable_badge_count">バッジ数を有効にする</string>
+    <string name="enable_badge_count_summary">スーパーユーザーとシステムモジュールのバッジ数をナビゲーションバーに表示する</string>
 </resources>

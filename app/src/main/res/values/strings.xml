@@ -519,6 +519,8 @@
     <string name="msg_biometric">Please verify your biometric identity</string>
     <string name="settings_biometric_login">Biometric Authentication</string>
     <string name="settings_biometric_login_summary">Require biometric authentication when opening the app</string>
+    <string name="settings_strong_biometric">Strong Biometric Authentication</string>
+    <string name="settings_strong_biometric_summary">Require authentication for installing/uninstalling/disabling modules</string>
 
     <!-- Theme Store Strings -->
     <string name="theme_store_title">Theme Store</string>
@@ -643,4 +645,8 @@
     <string name="acefs_save_config">Save Configuration</string>
     <string name="acefs_save_success">Configuration saved successfully</string>
     <string name="acefs_save_failed">Failed to save configuration</string>
+
+    <!-- Badge Count Settings -->
+    <string name="enable_badge_count">Enable Badge Count</string>
+    <string name="enable_badge_count_summary">Enable badge count for superuser and system modules on the navigation bar</string>
 </resources>

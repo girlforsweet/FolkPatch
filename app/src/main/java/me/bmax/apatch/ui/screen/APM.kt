@@ -142,6 +142,8 @@ import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
 
+import me.bmax.apatch.util.BiometricUtils
+
 @OptIn(ExperimentalMaterial3Api::class)
 @Destination<RootGraph>
 @Composable
@@ -174,6 +176,21 @@ fun APModuleScreen(navigator: DestinationsNavigator) {
     }
 
     val state by APApplication.apStateLiveData.observeAsState(APApplication.State.UNKNOWN_STATE)
+    val scope = rememberCoroutineScope()
+
+    suspend fun checkStrongBiometric(): Boolean {
+        val prefs = APApplication.sharedPreferences
+        if (prefs.getBoolean("strong_biometric", false) && prefs.getBoolean("biometric_login", false)) {
+            val activity = context as? androidx.fragment.app.FragmentActivity
+            return if (activity != null) {
+                BiometricUtils.authenticate(activity)
+            } else {
+                true
+            }
+        }
+        return true
+    }
+
     if (state != APApplication.State.ANDROIDPATCH_INSTALLED && state != APApplication.State.ANDROIDPATCH_NEED_UPDATE) {
         Column(
             modifier = Modifier
@@ -239,7 +256,7 @@ fun APModuleScreen(navigator: DestinationsNavigator) {
 
     Scaffold(
         topBar = {
-        TopBar(navigator, viewModel, snackBarHost, searchQuery) { searchQuery = it }
+        TopBar(navigator, viewModel, snackBarHost, searchQuery, ::checkStrongBiometric) { searchQuery = it }
     }, floatingActionButton = if (hideInstallButton) {
         { /* Empty */ }
     } else {
@@ -285,10 +302,14 @@ fun APModuleScreen(navigator: DestinationsNavigator) {
                 contentColor = MaterialTheme.colorScheme.onPrimary.copy(alpha = 1f),
                 containerColor = MaterialTheme.colorScheme.primary.copy(alpha = 1f),
                 onClick = {
-                    // select the zip file to install
-                    val intent = Intent(Intent.ACTION_GET_CONTENT)
-                    intent.type = "application/zip"
-                    selectZipLauncher.launch(intent)
+                    scope.launch {
+                        if (checkStrongBiometric()) {
+                            // select the zip file to install
+                            val intent = Intent(Intent.ACTION_GET_CONTENT)
+                            intent.type = "application/zip"
+                            selectZipLauncher.launch(intent)
+                        }
+                    }
                 }) {
                 Icon(
                     painter = painterResource(id = R.drawable.package_import),
@@ -319,6 +340,7 @@ fun APModuleScreen(navigator: DestinationsNavigator) {
                     modules = filteredModuleList,
                     showMoreModuleInfo = showMoreModuleInfo,
                     foldSystemModule = foldSystemModule,
+                    checkStrongBiometric = ::checkStrongBiometric,
                     modifier = Modifier
                         .padding(innerPadding)
                         .fillMaxSize(),
@@ -422,6 +444,7 @@ private fun ModuleList(
     modules: List<APModuleViewModel.ModuleInfo>,
     showMoreModuleInfo: Boolean,
     foldSystemModule: Boolean,
+    checkStrongBiometric: suspend () -> Boolean,
     modifier: Modifier = Modifier,
     state: LazyListState,
     onInstallModule: (Uri) -> Unit,
@@ -504,6 +527,7 @@ private fun ModuleList(
     }
 
     suspend fun onModuleUninstall(module: APModuleViewModel.ModuleInfo) {
+        if (!checkStrongBiometric()) return
         val confirmResult = confirmDialog.awaitConfirm(
             moduleStr,
             content = moduleUninstallConfirm.format(module.name),
@@ -599,6 +623,7 @@ private fun ModuleList(
                             },
                             onCheckChanged = {
                                 scope.launch {
+                                    if (!checkStrongBiometric()) return@launch
                                     val success = loadingDialog.withLoading {
                                         withContext(Dispatchers.IO) {
                                             toggleModule(module.id, !isChecked)
@@ -653,6 +678,7 @@ private fun TopBar(
     viewModel: APModuleViewModel,
     snackBarHost: SnackbarHostState,
     searchQuery: String,
+    checkStrongBiometric: suspend () -> Boolean,
     onSearchQueryChange: (String) -> Unit
 ) {
     val confirmDialog = rememberConfirmDialog()
@@ -705,6 +731,7 @@ private fun TopBar(
             if (showDisableAllButton) {
                 androidx.compose.material3.IconButton(onClick = {
                     scope.launch {
+                        if (!checkStrongBiometric()) return@launch
                         val result = confirmDialog.awaitConfirm(
                             title = disableAllTitle,
                             content = disableAllConfirm,

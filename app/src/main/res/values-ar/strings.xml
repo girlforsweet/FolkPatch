@@ -518,6 +518,8 @@
     <string name="msg_biometric">يرجى التحقق من هويتك البيومترية</string>
     <string name="settings_biometric_login">المصادقة البيومترية</string>
     <string name="settings_biometric_login_summary">تتطلب مصادقة بيومترية عند فتح التطبيق</string>
+    <string name="settings_strong_biometric">المصادقة البيومترية القوية</string>
+    <string name="settings_strong_biometric_summary">تتطلب المصادقة عند تثبيت/إلغاء تثبيت/تعطيل الوحدات</string>
 
     <!-- Theme Store Strings -->
     <string name="theme_store_title">متجر السمات</string>
@@ -624,4 +626,7 @@
     <string name="backup_success">تم النسخ الاحتياطي بنجاح</string>
     <string name="restore_success">تمت الاستعادة بنجاح</string>
 
+    <!-- Badge Count Settings -->
+    <string name="enable_badge_count">تفعيل عدد الشارات</string>
+    <string name="enable_badge_count_summary">تفعيل عدد الشارات للمستخدم المتميز والوحدات النظامية على شريط التنقل</string>
 </resources>
