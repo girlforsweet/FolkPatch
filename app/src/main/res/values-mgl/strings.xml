@@ -258,6 +258,8 @@
     
     <string name="settings_lite_mode">简约魔法模式</string>
     <string name="settings_lite_mode_mode_summary">不挂载魔法文件以获得更好的施法性能和隐蔽性</string>
+    <string name="hide_about_card">隐藏关于卡片</string>
+    <string name="hide_about_card_summary">隐藏魔法大厅的关于卡片</string>
     <string name="settings_force_overlayfs_mode">强制星之回廊模式</string>
     <string name="settings_force_overlayfs_mode_summary">强制使用星之回廊加载魔法阵</string>
     <string name="settings_check_update">检查魔法升级</string>
