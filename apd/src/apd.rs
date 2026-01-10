@@ -143,7 +143,7 @@ pub fn root_shell() -> Result<()> {
             #[cfg(target_arch = "aarch64")]
             let pw = unsafe {libc::getpwnam(name.as_ptr()).as_ref()};
             #[cfg(target_arch = "x86_64")]
-            let pw =unsafe { libc::getpwnam(name.as_ptr() as *const i8).as_ref();}
+            let pw = unsafe { libc::getpwnam(name.as_ptr() as *const i8).as_ref() };
 
             match pw {
                 Some(pw) => pw.pw_uid,
