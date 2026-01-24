@@ -397,7 +397,33 @@ fun GeneralSettings(
                 ListItem(colors = ListItemDefaults.colors(containerColor = Color.Transparent), headlineContent = {
                     Text(text = logTitle)
                 }, modifier = Modifier.clickable {
-                    showLogBottomSheet = true
+                    scope.launch {
+                        val bugreport = loadingDialog.withLoading {
+                            withContext(Dispatchers.IO) {
+                                getBugreportFile(context)
+                            }
+                        }
+
+                        val uri: Uri = FileProvider.getUriForFile(
+                            context,
+                            "${BuildConfig.APPLICATION_ID}.fileprovider",
+                            bugreport
+                        )
+
+                        val shareIntent = Intent(Intent.ACTION_SEND).apply {
+                            putExtra(Intent.EXTRA_STREAM, uri)
+                            type = "application/gzip"
+                            clipData = android.content.ClipData.newRawUri(null, uri)
+                            addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
+                        }
+
+                        context.startActivity(
+                            Intent.createChooser(
+                                shareIntent,
+                                context.getString(R.string.send_log)
+                            )
+                        )
+                    }
                 }, leadingContent = { Icon(Icons.Filled.BugReport, null) })
             }
         }
@@ -561,7 +587,8 @@ fun LogBottomSheet(onDismissRequest: () -> Unit, snackBarHost: SnackbarHostState
 
                                     val shareIntent = Intent(Intent.ACTION_SEND).apply {
                                         putExtra(Intent.EXTRA_STREAM, uri)
-                                        setDataAndType(uri, "application/gzip")
+                                        type = "application/gzip"
+                                        clipData = android.content.ClipData.newRawUri(null, uri)
                                         addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
                                     }
 

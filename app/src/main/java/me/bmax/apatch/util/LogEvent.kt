@@ -90,6 +90,8 @@ suspend fun getBugreportFile(context: Context): File = withContext(Dispatchers.I
     shell.newJob().add("tar czf ${targetFile.absolutePath} -C ${bugreportDir.absolutePath} .")
         .exec()
     shell.newJob().add("rm -rf ${bugreportDir.absolutePath}").exec()
+    val uid = android.os.Process.myUid()
+    shell.newJob().add("chown $uid:$uid ${targetFile.absolutePath}").exec()
     shell.newJob().add("chmod 0644 ${targetFile.absolutePath}").exec()
 
     return@withContext targetFile
