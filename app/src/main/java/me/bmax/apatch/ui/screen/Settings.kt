@@ -9,6 +9,7 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.mutableStateOf
@@ -20,14 +21,16 @@ import androidx.compose.ui.res.stringResource
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.annotation.RootGraph
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 import me.bmax.apatch.APApplication
 import me.bmax.apatch.R
 import me.bmax.apatch.ui.component.SearchAppBar
 import me.bmax.apatch.ui.screen.settings.*
 import me.bmax.apatch.util.APatchKeyHelper
 import me.bmax.apatch.util.getSELinuxMode
-import me.bmax.apatch.util.isGlobalNamespaceEnabled
-import me.bmax.apatch.util.isMagicMountEnabled
+import me.bmax.apatch.util.isGlobalNamespaceEnabled as checkGlobalNamespaceEnabled
+import me.bmax.apatch.util.isMagicMountEnabled as checkMagicMountEnabled
 import me.bmax.apatch.util.ui.LocalSnackbarHost
 
 import com.ramcosta.composedestinations.generated.destinations.ThemeStoreScreenDestination
@@ -50,10 +53,17 @@ fun SettingScreen(navigator: DestinationsNavigator) {
     val prefs = APApplication.sharedPreferences
     var autoBackupModule by rememberSaveable { mutableStateOf(prefs.getBoolean("auto_backup_module", false)) }
 
-    if (kPatchReady && aPatchReady) {
-        isGlobalNamespaceEnabled = isGlobalNamespaceEnabled()
-        isMagicMountEnabled = isMagicMountEnabled()
-        currentSELinuxMode = getSELinuxMode()
+    LaunchedEffect(kPatchReady, aPatchReady) {
+        if (kPatchReady && aPatchReady) {
+            withContext(Dispatchers.IO) {
+                val globalNamespace = checkGlobalNamespaceEnabled()
+                val magicMount = checkMagicMountEnabled()
+                val seLinux = getSELinuxMode()
+                isGlobalNamespaceEnabled = globalNamespace
+                isMagicMountEnabled = magicMount
+                currentSELinuxMode = seLinux
+            }
+        }
     }
 
     val snackBarHost = LocalSnackbarHost.current

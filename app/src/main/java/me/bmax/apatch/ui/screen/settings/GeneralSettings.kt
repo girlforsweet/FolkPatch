@@ -150,7 +150,6 @@ fun GeneralSettings(
     val showIconChooseDialog = remember { mutableStateOf(false) }
     val showDesktopAppNameDialog = remember { mutableStateOf(false) }
     val showDpiDialog = remember { mutableStateOf(false) }
-    var showLogBottomSheet by remember { mutableStateOf(false) }
     val showFolkXAnimationTypeDialog = remember { mutableStateOf(false) }
     val showFolkXAnimationSpeedDialog = remember { mutableStateOf(false) }
     val showAppListLoadingSchemeDialog = remember { mutableStateOf(false) }
@@ -482,148 +481,14 @@ fun GeneralSettings(
         AppListLoadingSchemeDialog(showAppListLoadingSchemeDialog)
     }
 
-    if (showLogBottomSheet) {
-        LogBottomSheet(
-            onDismissRequest = { showLogBottomSheet = false },
-            snackBarHost = snackBarHost
-        )
-    }
+
 }
 
 // Dialog Implementations will be added here or imported. 
 // Since we are splitting, we should copy the dialogs here or to a shared components file.
 // For now, I will assume they are here. I will paste the implementations I found.
 
-@OptIn(ExperimentalMaterial3Api::class)
-@Composable
-fun LogBottomSheet(onDismissRequest: () -> Unit, snackBarHost: SnackbarHostState) {
-    val context = LocalContext.current
-    val scope = rememberCoroutineScope()
-    val loadingDialog = rememberLoadingDialog()
-    val logSavedMessage = stringResource(R.string.log_saved)
-    
-    val exportBugreportLauncher = rememberLauncherForActivityResult(
-        ActivityResultContracts.CreateDocument("application/gzip")
-    ) { uri: Uri? ->
-        if (uri != null) {
-            scope.launch(Dispatchers.IO) {
-                loadingDialog.show()
-                uri.outputStream().use { output ->
-                    getBugreportFile(context).inputStream().use {
-                        it.copyTo(output)
-                    }
-                }
 
-                loadingDialog.hide()
-                snackBarHost.showSnackbar(message = logSavedMessage)
-            }
-        }
-    }
-
-    ModalBottomSheet(
-        onDismissRequest = onDismissRequest,
-        contentWindowInsets = { WindowInsets(0, 0, 0, 0) },
-        content = {
-            Row(
-                modifier = Modifier
-                    .padding(10.dp)
-                    .align(Alignment.CenterHorizontally)
-
-            ) {
-                Box {
-                    Column(
-                        modifier = Modifier
-                            .padding(16.dp)
-                            .clickable {
-                                scope.launch {
-                                    val formatter =
-                                        DateTimeFormatter.ofPattern("yyyy-MM-dd_HH_mm")
-                                    val current = LocalDateTime.now().format(formatter)
-                                    try {
-                                        exportBugreportLauncher.launch("APatch_bugreport_${current}.tar.gz")
-                                    } catch (e: ActivityNotFoundException) {
-                                        Toast.makeText(context, e.message, Toast.LENGTH_SHORT).show()
-                                    }
-                                    onDismissRequest()
-                                }
-                            }
-                    ) {
-                        Icon(
-                            Icons.Filled.Save,
-                            contentDescription = null,
-                            modifier = Modifier.align(Alignment.CenterHorizontally)
-                        )
-                        Text(
-                            text = stringResource(id = R.string.save_log),
-                            modifier = Modifier.padding(top = 16.dp),
-                            textAlign = TextAlign.Center.also {
-                                LineHeightStyle(
-                                    alignment = LineHeightStyle.Alignment.Center,
-                                    trim = LineHeightStyle.Trim.None
-                                )
-                            }
-
-                        )
-                    }
-
-                }
-                Box {
-                    Column(
-                        modifier = Modifier
-                            .padding(16.dp)
-                            .clickable {
-                                scope.launch {
-                                    val bugreport = loadingDialog.withLoading {
-                                        withContext(Dispatchers.IO) {
-                                            getBugreportFile(context)
-                                        }
-                                    }
-
-                                    val uri: Uri = FileProvider.getUriForFile(
-                                        context,
-                                        "${BuildConfig.APPLICATION_ID}.fileprovider",
-                                        bugreport
-                                    )
-
-                                    val shareIntent = Intent(Intent.ACTION_SEND).apply {
-                                        putExtra(Intent.EXTRA_STREAM, uri)
-                                        type = "application/gzip"
-                                        clipData = android.content.ClipData.newRawUri(null, uri)
-                                        addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
-                                    }
-
-                                    context.startActivity(
-                                        Intent.createChooser(
-                                            shareIntent,
-                                            context.getString(R.string.send_log)
-                                        )
-                                    )
-                                    onDismissRequest()
-                                }
-                            }) {
-                        Icon(
-                            Icons.Filled.Share,
-                            contentDescription = null,
-                            modifier = Modifier.align(Alignment.CenterHorizontally)
-                        )
-                        Text(
-                            text = stringResource(id = R.string.send_log),
-                            modifier = Modifier.padding(top = 16.dp),
-                            textAlign = TextAlign.Center.also {
-                                LineHeightStyle(
-                                    alignment = LineHeightStyle.Alignment.Center,
-                                    trim = LineHeightStyle.Trim.None
-                                )
-                            }
-
-                        )
-                    }
-
-                }
-            }
-            NavigationBarsSpacer()
-        })
-}
 
 fun appTitleList(): List<AppTitle> {
     return listOf(

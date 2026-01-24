@@ -2,33 +2,49 @@ package me.bmax.apatch.util
 
 import android.util.Log
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.res.stringResource
 import com.topjohnwu.superuser.Shell
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 import me.bmax.apatch.R
 
 @Composable
 fun getSELinuxStatus(): String {
-    val shell = Shell.Builder.create()
-        .build("sh")
+    var status by remember { mutableStateOf("") }
+    val enforcing = stringResource(R.string.home_selinux_status_enforcing)
+    val permissive = stringResource(R.string.home_selinux_status_permissive)
+    val disabled = stringResource(R.string.home_selinux_status_disabled)
+    val unknown = stringResource(R.string.home_selinux_status_unknown)
 
-    val list = ArrayList<String>()
-    val result = shell.newJob().add("getenforce").to(list, list).exec()
-    val output = result.out.joinToString("\n").trim()
+    LaunchedEffect(Unit) {
+        withContext(Dispatchers.IO) {
+            val shell = Shell.Builder.create().build("sh")
+            val list = ArrayList<String>()
+            val result = shell.newJob().add("getenforce").to(list, list).exec()
+            val output = result.out.joinToString("\n").trim()
+            shell.close()
 
-    if (result.isSuccess) {
-        return when (output) {
-            "Enforcing" -> stringResource(R.string.home_selinux_status_enforcing)
-            "Permissive" -> stringResource(R.string.home_selinux_status_permissive)
-            "Disabled" -> stringResource(R.string.home_selinux_status_disabled)
-            else -> stringResource(R.string.home_selinux_status_unknown)
+            status = if (result.isSuccess) {
+                when (output) {
+                    "Enforcing" -> enforcing
+                    "Permissive" -> permissive
+                    "Disabled" -> disabled
+                    else -> unknown
+                }
+            } else if (output.endsWith("Permission denied")) {
+                enforcing
+            } else {
+                unknown
+            }
         }
     }
 
-    return if (output.endsWith("Permission denied")) {
-        stringResource(R.string.home_selinux_status_enforcing)
-    } else {
-        stringResource(R.string.home_selinux_status_unknown)
-    }
+    return if (status.isEmpty()) unknown else status
 }
 
 private fun getSystemProperty(key: String): Boolean {
