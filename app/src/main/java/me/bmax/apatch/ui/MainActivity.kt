@@ -109,7 +109,7 @@ import me.bmax.apatch.ui.theme.ThemeManager
 import me.bmax.apatch.ui.component.rememberLoadingDialog
 import android.widget.Toast
 
-import me.bmax.apatch.ui.screen.ThemeImportDialog
+import me.bmax.apatch.ui.screen.settings.ThemeImportDialog
 import me.bmax.apatch.util.BiometricUtils
 
 class MainActivity : AppCompatActivity() {

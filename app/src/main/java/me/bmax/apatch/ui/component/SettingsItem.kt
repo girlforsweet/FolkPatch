@@ -48,23 +48,23 @@ fun CheckboxItem(
 ) {
     ListItem(
         headlineContent = { Text(title) },
-        supportingContent = {
-            if (summary != null) {
+        supportingContent = if (summary != null) {
+            {
                 Text(
                     text = summary,
                     style = MaterialTheme.typography.bodyMedium,
                     color = MaterialTheme.colorScheme.outline
                 )
             }
-        },
-        leadingContent = {
-            if (icon != null) {
+        } else null,
+        leadingContent = if (icon != null) {
+            {
                 Icon(
                     imageVector = icon,
                     contentDescription = null
                 )
             }
-        },
+        } else null,
         trailingContent = {
             Checkbox(
                 checked = checked,
@@ -93,23 +93,23 @@ fun SwitchItem(
 ) {
     ListItem(
         headlineContent = { Text(title) },
-        supportingContent = {
-            if (summary != null) {
+        supportingContent = if (summary != null) {
+            {
                 Text(
                     text = summary,
                     style = MaterialTheme.typography.bodyMedium,
                     color = MaterialTheme.colorScheme.outline
                 )
             }
-        },
-        leadingContent = {
-            if (icon != null) {
+        } else null,
+        leadingContent = if (icon != null) {
+            {
                 Icon(
                     imageVector = icon,
                     contentDescription = null
                 )
             }
-        },
+        } else null,
         trailingContent = {
             Switch(
                 checked = checked,
