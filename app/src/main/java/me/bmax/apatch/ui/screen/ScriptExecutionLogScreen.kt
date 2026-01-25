@@ -62,18 +62,8 @@ fun ScriptExecutionLogScreen(
     val context = androidx.compose.ui.platform.LocalContext.current
 
     LaunchedEffect(Unit) {
-        val updaterJob = launch {
-            while (true) {
-                delay(100)
-                val newText = displayBuffer.toString()
-                if (text.length != newText.length) {
-                    text = newText
-                }
-            }
-        }
-
         withContext(Dispatchers.IO) {
-            ScriptLibraryManager.executeScriptWithCallbacks(
+            val success = ScriptLibraryManager.executeScriptWithCallbacks(
                 scriptInfo,
                 onStdout = {
                     val tempText = "$it\n"
@@ -84,6 +74,12 @@ fun ScriptExecutionLogScreen(
                         displayBuffer.append(tempText)
                     }
                     fullLogBuffer.append(it).append("\n")
+                    val newText = displayBuffer.toString()
+                    scope.launch(Dispatchers.Main) {
+                        if (text != newText) {
+                            text = newText
+                        }
+                    }
                 },
                 onStderr = {
                     val tempText = "$it\n"
@@ -94,13 +90,21 @@ fun ScriptExecutionLogScreen(
                         displayBuffer.append(tempText)
                     }
                     fullLogBuffer.append(it).append("\n")
+                    val newText = displayBuffer.toString()
+                    scope.launch(Dispatchers.Main) {
+                        if (text != newText) {
+                            text = newText
+                        }
+                    }
                 }
             )
+            if (!success && fullLogBuffer.isEmpty()) {
+                displayBuffer.append(context.getString(R.string.script_library_no_output))
+            }
         }
 
-        updaterJob.cancel()
         val finalText = displayBuffer.toString()
-        if (text.length != finalText.length) {
+        if (text != finalText) {
             text = finalText
         }
     }

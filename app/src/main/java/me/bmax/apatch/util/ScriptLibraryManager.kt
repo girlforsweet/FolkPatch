@@ -17,6 +17,22 @@ import java.io.File
 
     private val gson = Gson()
 
+    private fun buildScriptsFromDirectory(): List<ScriptInfo> {
+        val scriptsDir = File(SCRIPTS_DIR)
+        if (!scriptsDir.exists() || !scriptsDir.isDirectory) {
+            return emptyList()
+        }
+        val files = scriptsDir.listFiles()?.filter { it.isFile }?.sortedBy { it.name.lowercase() } ?: emptyList()
+        return files.map { file ->
+            val name = if (file.name.endsWith(".sh", ignoreCase = true)) {
+                file.name.substring(0, file.name.length - 3)
+            } else {
+                file.name
+            }
+            ScriptInfo(path = file.absolutePath, alias = name)
+        }
+    }
+
     data class ScriptExecutionResult(
         val success: Boolean,
         val exitCode: Int,
@@ -27,13 +43,24 @@ import java.io.File
     suspend fun loadScripts(): List<ScriptInfo> = withContext(Dispatchers.IO) {
         try {
             val configFile = File(CONFIG_FILE)
-            if (!configFile.exists()) {
-                return@withContext emptyList()
+            if (configFile.exists()) {
+                val json = configFile.readText()
+                val type = object : TypeToken<List<ScriptInfo>>() {}.type
+                val parsed = gson.fromJson<List<ScriptInfo>>(json, type) ?: emptyList()
+                val existing = parsed.filter { File(it.path).exists() }
+                if (existing.isNotEmpty()) {
+                    if (existing.size != parsed.size) {
+                        saveScripts(existing)
+                    }
+                    return@withContext existing
+                }
             }
 
-            val json = configFile.readText()
-            val type = object : TypeToken<List<ScriptInfo>>() {}.type
-            gson.fromJson(json, type) ?: emptyList()
+            val rebuilt = buildScriptsFromDirectory()
+            if (rebuilt.isNotEmpty()) {
+                saveScripts(rebuilt)
+            }
+            rebuilt
         } catch (e: Exception) {
             e.printStackTrace()
             emptyList()
