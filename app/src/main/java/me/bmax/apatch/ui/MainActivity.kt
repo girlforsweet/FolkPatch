@@ -110,7 +110,6 @@ import me.zhanghai.android.appiconloader.coil.AppIconKeyer
 import me.bmax.apatch.util.UpdateChecker
 import me.bmax.apatch.ui.component.UpdateDialog
 
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.platform.LocalContext
 import android.provider.OpenableColumns
 import me.bmax.apatch.ui.theme.ThemeManager
@@ -207,7 +206,6 @@ class MainActivity : AppCompatActivity() {
             }
         }
 
-        // 初始化权限处理器
         permissionHandler = PermissionRequestHandler(this)
 
         val prefs = APApplication.sharedPreferences
@@ -248,19 +246,15 @@ class MainActivity : AppCompatActivity() {
 
     private fun setupUI() {
         
-        // Load DPI settings
         me.bmax.apatch.util.DPIUtils.load(this)
         me.bmax.apatch.util.DPIUtils.applyDpi(this)
         
-        // 检查并请求权限
         if (!PermissionUtils.hasExternalStoragePermission(this) || 
             !PermissionUtils.hasWriteExternalStoragePermission(this)) {
             permissionHandler.requestPermissions(
                 onGranted = {
-                    // 权限已授予
                 },
                 onDenied = {
-                    // 权限被拒绝，可以显示一个提示
                 }
             )
         }
@@ -312,7 +306,6 @@ class MainActivity : AppCompatActivity() {
                 }
             }
 
-            // Start badge count refresh coroutine
             LaunchedEffect(Unit) {
                 val badgePrefs = APApplication.sharedPreferences
                 var lastEnableSuperUser = badgePrefs.getBoolean("badge_superuser", true)
@@ -428,7 +421,6 @@ class MainActivity : AppCompatActivity() {
                 LaunchedEffect(Unit) {
                     if (prefs.getBoolean("auto_update_check", true)) {
                         withContext(Dispatchers.IO) {
-                             // Delay a bit to wait for network connection
                              kotlinx.coroutines.delay(2000)
                              val hasUpdate = me.bmax.apatch.util.UpdateChecker.checkUpdate()
                              if (hasUpdate) {
@@ -448,7 +440,6 @@ class MainActivity : AppCompatActivity() {
                     )
                 }
 
-                // 读取导航栏模式设置
                 var navMode by remember { mutableStateOf(prefs.getString("nav_mode", "auto") ?: "auto") }
                 
                 DisposableEffect(Unit) {
@@ -463,7 +454,6 @@ class MainActivity : AppCompatActivity() {
                     }
                 }
 
-                // 使用 BoxWithConstraints 检测屏幕宽度
                 BoxWithConstraints(modifier = Modifier.fillMaxSize()) {
                     val useNavigationRail = when (navMode) {
                         "rail" -> true
@@ -472,7 +462,6 @@ class MainActivity : AppCompatActivity() {
                     }
                     
                     if (useNavigationRail) {
-                        // 横向布局：NavigationRail 在左侧
                         Row(modifier = Modifier.fillMaxSize()) {
                             NavigationRailBar(navController)
                             
@@ -491,7 +480,6 @@ class MainActivity : AppCompatActivity() {
                             }
                         }
                     } else {
-                        // 竖向布局：NavigationBar 在底部
                         Scaffold(
                             bottomBar = { BottomBar(navController) }
                         ) { _ ->
@@ -513,7 +501,6 @@ class MainActivity : AppCompatActivity() {
         }
         }
 
-        // Initialize Coil
         val iconSize = resources.getDimensionPixelSize(android.R.dimen.app_icon_size)
         Coil.setImageLoader(
             ImageLoader.Builder(this)
@@ -531,60 +518,11 @@ class MainActivity : AppCompatActivity() {
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun UnofficialVersionDialog() {
-    val uriHandler = LocalUriHandler.current
-    
-    // 6秒后强制退出
-    LaunchedEffect(Unit) {
-        delay(3000)
-        exitProcess(0)
-    }
-
-    BasicAlertDialog(
-        onDismissRequest = { /* Cannot dismiss */ },
-        properties = DialogProperties(
-            dismissOnBackPress = false,
-            dismissOnClickOutside = false
-        )
-    ) {
-        Surface(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(16.dp),
-            shape = RoundedCornerShape(28.dp),
-            tonalElevation = AlertDialogDefaults.TonalElevation,
-            color = AlertDialogDefaults.containerColor,
-        ) {
-            Column(modifier = Modifier.padding(24.dp)) {
-                Text(
-                    text = stringResource(R.string.unofficial_version_title),
-                    style = MaterialTheme.typography.headlineSmall
-                )
-                Spacer(modifier = Modifier.height(16.dp))
-                Text(
-                    text = stringResource(R.string.unofficial_version_message),
-                    style = MaterialTheme.typography.bodyMedium
-                )
-                Spacer(modifier = Modifier.height(24.dp))
-                Row(modifier = Modifier.align(Alignment.End)) {
-                    TextButton(
-                        onClick = {
-                            uriHandler.openUri("https://github.com/matsuzaka-yuki/FolkPatch")
-                        }
-                    ) {
-                        Text(stringResource(R.string.go_to_github))
-                    }
-                }
-            }
-        }
-    }
 }
 
 @Composable
 private fun BottomBar(navController: NavHostController) {
     val context = LocalContext.current
-    if (!APApplication.isSignatureValid) {
-        UnofficialVersionDialog()
-    }
     val state by APApplication.apStateLiveData.observeAsState(APApplication.State.UNKNOWN_STATE)
     val navigator = navController.rememberDestinationsNavigator()
 
@@ -593,12 +531,10 @@ private fun BottomBar(navController: NavHostController) {
     var showNavKpm by remember { mutableStateOf(prefs.getBoolean("show_nav_kpm", true)) }
     var showNavSuperUser by remember { mutableStateOf(prefs.getBoolean("show_nav_superuser", true)) }
 
-    // Individual badge count settings - default enabled
     var enableSuperUserBadge by remember { mutableStateOf(prefs.getBoolean("badge_superuser", true)) }
     var enableApmBadge by remember { mutableStateOf(prefs.getBoolean("badge_apm", true)) }
     var enableKernelBadge by remember { mutableStateOf(prefs.getBoolean("badge_kernel", true)) }
 
-    // Collect badge counts from AppData
     val superuserCount by me.bmax.apatch.util.AppData.DataRefreshManager.superuserCount.collectAsState()
     val apmModuleCount by me.bmax.apatch.util.AppData.DataRefreshManager.apmModuleCount.collectAsState()
     val kernelModuleCount by me.bmax.apatch.util.AppData.DataRefreshManager.kernelModuleCount.collectAsState()
@@ -881,7 +817,6 @@ private fun createNavTransitions(
                                 }
                             }
                             else -> {
-                                // linear: 侧边导航栏使用上下滑动，底部导航栏使用左右滑动
                                 if (useNavigationRail) {
                                     if (targetIndex > initialIndex) {
                                         slideInVertically(animationSpec = spring(dampingRatio = 0.8f, stiffness = stiffness), initialOffsetY = { height -> height }) + fadeIn()
@@ -947,7 +882,6 @@ private fun createNavTransitions(
                                 }
                             }
                             else -> {
-                                // linear: 侧边导航栏使用上下滑动，底部导航栏使用左右滑动
                                 if (useNavigationRail) {
                                     if (targetIndex > initialIndex) {
                                         slideOutVertically(animationSpec = spring(dampingRatio = 0.8f, stiffness = stiffness), targetOffsetY = { height -> -height }) + fadeOut()
