@@ -30,14 +30,12 @@ val managerVersionName: String by rootProject.extra
 val branchName: String by rootProject.extra
 val kernelPatchVersion: String by rootProject.extra
 
-// Load keystore properties
 val keystoreProperties = Properties()
 val keystorePropertiesFile = rootProject.file("keystore.properties")
 if (keystorePropertiesFile.exists()) {
     keystoreProperties.load(FileInputStream(keystorePropertiesFile))
 }
 
-// Load local properties
 val localProperties = Properties()
 val localPropertiesFile = rootProject.file("local.properties")
 if (localPropertiesFile.exists()) {
@@ -153,19 +151,16 @@ android {
                 cFlags += baseFlags + "-std=c2x"
                 arguments += baseArgs
                 
-                // Pass Token and Signature Hash to CMake
                 val authProps = Properties()
                 val authFile = rootProject.file("auth.properties")
                 if (authFile.exists()) {
                     authProps.load(FileInputStream(authFile))
                 }
                 val token = authProps.getProperty("api.token", "")
-                val signatureHash = authProps.getProperty("app.signature.hash", "")
                 
-                // Pass to C++ compiler directly via flags
                 cppFlags += listOf(
                     "-DAPI_TOKEN=\"$token\"", 
-                    "-DAPP_SIGNATURE_HASH=\"$signatureHash\"",
+                    "-DAPP_SIGNATURE_HASH=\"\"",
                     "-DAPP_PACKAGE_NAME=\"$applicationId\""
                 )
                 
@@ -173,8 +168,7 @@ android {
             }
         }
         
-        // Pass Signature Hash to Java
-        buildConfigField("String", "APP_SIGNATURE_HASH", "\"${localProperties.getProperty("app.signature.hash", "")}\"")
+        buildConfigField("String", "APP_SIGNATURE_HASH", "\"\"")
     }
 
     compileOptions {
@@ -218,7 +212,6 @@ android {
     }
 }
 
-// https://stackoverflow.com/a/77745844
 tasks.withType<PackageAndroidArtifact> {
     doFirst { appMetadata.asFile.orNull?.writeText("") }
 }
@@ -295,8 +288,6 @@ registerDownloadTask(
     version = kernelPatchVersion
 )
 
-// Compat kp version less than 0.10.7
-// TODO: Remove in future
 registerDownloadTask(
     taskName = "downloadCompatKpatch",
     srcUrl = "https://github.com/bmax121/KernelPatch/releases/download/0.10.7/kpatch-android",
@@ -322,8 +313,6 @@ tasks.getByName("preBuild").dependsOn(
     "mergeScripts",
 )
 
-// https://github.com/bbqsrc/cargo-ndk
-// cargo ndk -t arm64-v8a build --release
 tasks.register<Exec>("cargoBuild") {
     executable("cargo")
     args("ndk", "-t", "arm64-v8a", "build", "--release")
