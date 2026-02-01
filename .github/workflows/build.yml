@@ -67,17 +67,6 @@ jobs:
           workspaces: apd
           cache-targets: false
 
-      - name: Bypass Signature Check (Auto Patch)
-        run: |
-          if [ -f "app/build.gradle.kts" ]; then
-            sed -i 's|APP_SIGNATURE_HASH", "\\"${localProperties.getProperty("app.signature.hash", "")}\\""|APP_SIGNATURE_HASH", "\\"\\""|g' app/build.gradle.kts || true
-            sed -i 's|-DAPP_SIGNATURE_HASH=\\"\$signatureHash\\"|-DAPP_SIGNATURE_HASH=\\"\\ settlement"|g' app/build.gradle.kts || true
-            sed -i 's|val signatureHash =.*|val signatureHash = ""|g' app/build.gradle.kts || true
-          fi
-          find . -type f \( -name "*.kt" -o -name "*.java" \) -exec sed -i 's/isOfficialVersion = false/isOfficialVersion = true/g' {} + || true
-          find . -type f \( -name "*.kt" -o -name "*.java" \) -exec sed -i 's/isOfficial = false/isOfficial = true/g' {} + || true
-          find . -type f \( -name "*.cpp" -o -name "*.h" \) -exec sed -i 's/APP_SIGNATURE_HASH/""/g' {} + || true
-
       - name: Build with Gradle
         run: |
           echo 'org.gradle.parallel=true' >> gradle.properties
@@ -108,6 +97,7 @@ jobs:
         id: zip_step
         run: |
           mkdir -p output_zip
+          # 寻找已签名的 APK，如果签名失败则使用未签名的 APK
           if [ -f "${{ steps.sign_app.outputs.signedReleaseFile }}" ]; then
             cp "${{ steps.sign_app.outputs.signedReleaseFile }}" output_zip/
           else
