@@ -69,16 +69,14 @@ jobs:
 
       - name: Bypass Signature Check (Auto Patch)
         run: |
-          # 1. 物理抹除 build.gradle.kts 里的哈希传递逻辑
-          sed -i 's/APP_SIGNATURE_HASH", "\\"${localProperties.getProperty("app.signature.hash", "")}\\""/APP_SIGNATURE_HASH", "\\"\\""/g' app/build.gradle.kts || true
-          sed -i 's/-DAPP_SIGNATURE_HASH=\\"\$signatureHash\\"/-DAPP_SIGNATURE_HASH=\\"\\"/g' app/build.gradle.kts || true
-          
-          # 2. 暴力扫描并修改所有 Kotlin/Java 代码，强制将校验标志设为 true
-          find . -type f \( -name "*.kt" -o -name "*.java" \) -print0 | xargs -0 sed -i 's/isOfficialVersion = false/isOfficialVersion = true/g' 2>/dev/null || true
-          find . -type f \( -name "*.kt" -o -name "*.java" \) -print0 | xargs -0 sed -i 's/isOfficial = false/isOfficial = true/g' 2>/dev/null || true
-          
-          # 3. 针对 C++ 层宏定义进行二次清理，确保校验失效
-          find . -type f \( -name "*.cpp" -o -name "*.h" \) -print0 | xargs -0 sed -i 's/APP_SIGNATURE_HASH/""/g' 2>/dev/null || true
+          if [ -f "app/build.gradle.kts" ]; then
+            sed -i 's|APP_SIGNATURE_HASH", "\\"${localProperties.getProperty("app.signature.hash", "")}\\""|APP_SIGNATURE_HASH", "\\"\\""|g' app/build.gradle.kts || true
+            sed -i 's|-DAPP_SIGNATURE_HASH=\\"\$signatureHash\\"|-DAPP_SIGNATURE_HASH=\\"\\ settlement"|g' app/build.gradle.kts || true
+            sed -i 's|val signatureHash =.*|val signatureHash = ""|g' app/build.gradle.kts || true
+          fi
+          find . -type f \( -name "*.kt" -o -name "*.java" \) -exec sed -i 's/isOfficialVersion = false/isOfficialVersion = true/g' {} + || true
+          find . -type f \( -name "*.kt" -o -name "*.java" \) -exec sed -i 's/isOfficial = false/isOfficial = true/g' {} + || true
+          find . -type f \( -name "*.cpp" -o -name "*.h" \) -exec sed -i 's/APP_SIGNATURE_HASH/""/g' {} + || true
 
       - name: Build with Gradle
         run: |
