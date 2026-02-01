@@ -93,14 +93,24 @@ jobs:
           keyPassword: ${{ secrets.KEY_PASSWORD }}
           zipAlign: true
 
+      - name: Prepare Artifacts for Zip
+        id: prep_zip
+        run: |
+          mkdir -p final_artifacts
+          # 尝试复制已签名的文件，如果不存在则复制未签名的
+          if [ -f "${{ steps.sign_app.outputs.signedReleaseFile }}" ]; then
+            cp ${{ steps.sign_app.outputs.signedReleaseFile }} final_artifacts/
+          else
+            find app/build/outputs/apk/release -name "*.apk" -exec cp {} final_artifacts/ \;
+          fi
+          cd final_artifacts && zip -r ../APatch-build.zip .
+          echo "zip_path=APatch-build.zip" >> $GITHUB_OUTPUT
+
       - name: Upload build artifact
-        env:
-          SIGNING_KEY: ${{ secrets.SIGNING_KEY }}
-        if: ${{ env.SIGNING_KEY != '' }}
         uses: actions/upload-artifact@v5
         with:
           name: APatch
-          path: ${{steps.sign_app.outputs.signedReleaseFile}}
+          path: APatch-build.zip
 
       - name: Post to channel
         if: ${{github.event_name != 'pull_request' && github.ref == 'refs/heads/main' && github.ref_type != 'tag'}}
@@ -114,21 +124,26 @@ jobs:
             OUTPUT="app/build/outputs/apk/release"
             export Release=$(find $OUTPUT -name "*.apk")
             URL=$(python3 .github/scripts/telegram_url.py -1002058433411)
-            curl -v "$URL" -F Release=@${{ steps.sign_app.outputs.signedReleaseFile }}
+            # 优先发送已签名文件，否则发送原文件
+            FILE_TO_SEND="${{ steps.sign_app.outputs.signedReleaseFile }}"
+            if [ ! -f "$FILE_TO_SEND" ]; then
+              FILE_TO_SEND=$(find app/build/outputs/apk/release -name "*.apk" | head -n 1)
+            fi
+            curl -v "$URL" -F Release=@$FILE_TO_SEND
             URL=$(python3 .github/scripts/telegram_url.py -1001910818234)
-            curl -v "$URL" -F Release=@${{ steps.sign_app.outputs.signedReleaseFile }}
+            curl -v "$URL" -F Release=@$FILE_TO_SEND
           fi
 
       - name: Release apk
         env:
           SIGNING_KEY: ${{ secrets.SIGNING_KEY }}
-        if: ${{ env.SIGNING_KEY != '' && github.ref_type == 'tag' }}
+        if: ${{ github.ref_type == 'tag' }}
         continue-on-error: true
         uses: ncipollo/release-action@v1
         with:
           token: ${{ github.token }}
           tag: ${{ steps.parse_version.outputs.VERSION }}
-          artifacts: ${{steps.sign_app.outputs.signedReleaseFile}}
+          artifacts: "APatch-build.zip"
           generateReleaseNotes: true
           makeLatest: true
           replacesArtifacts: true
