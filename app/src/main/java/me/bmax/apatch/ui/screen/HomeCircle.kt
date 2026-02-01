@@ -4,10 +4,11 @@ import android.content.Context
 import android.os.Build
 import android.system.Os
 import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.background
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
@@ -18,13 +19,15 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.graphics.vector.ImageVector
-import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
@@ -69,109 +72,110 @@ fun HomeScreenCircle(
         modifier = Modifier
             .padding(innerPadding)
             .verticalScroll(rememberScrollState())
-            .padding(horizontal = 16.dp),
+            .padding(horizontal = 20.dp),
         verticalArrangement = Arrangement.spacedBy(16.dp)
     ) {
         val context = LocalContext.current
         
         if (BackgroundConfig.isCustomBackgroundEnabled) {
-            Spacer(Modifier.height(0.dp))
+            Spacer(Modifier.height(8.dp))
+        } else {
+            Spacer(Modifier.height(16.dp))
         }
         
-        // Status Card
         StatusCardCircle(kpState, apState, navigator, showUninstallDialog, showAuthKeyDialog)
 
-        // Superuser and Module Cards
         val showCoreCards = kpState != APApplication.State.UNKNOWN_STATE
         if (showCoreCards) {
             Row(
                 modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.spacedBy(16.dp)
+                horizontalArrangement = Arrangement.spacedBy(12.dp)
             ) {
                 val superuserCount by AppData.DataRefreshManager.superuserCount.collectAsState()
                 val moduleCount by AppData.DataRefreshManager.apmModuleCount.collectAsState()
                 
                 TonalCard(modifier = Modifier.weight(1f)) {
-                    Row(
+                    Column(
                         modifier = Modifier
                             .fillMaxWidth()
                             .clickable { navigator.navigate(BottomBarDestination.SuperUser.direction) }
-                            .padding(horizontal = 20.dp, vertical = 16.dp),
-                        verticalAlignment = Alignment.CenterVertically
+                            .padding(20.dp)
                     ) {
-                        Icon(
-                            imageVector = Icons.Outlined.Security,
-                            contentDescription = null,
-                            modifier = Modifier.size(20.dp),
-                            tint = MaterialTheme.colorScheme.onSurfaceVariant
-                        )
-                        Spacer(Modifier.width(16.dp))
-                        Column {
-                            Text(
-                                text = stringResource(R.string.superuser),
-                                style = MaterialTheme.typography.bodyLarge,
-                                maxLines = 1,
-                                overflow = TextOverflow.Ellipsis
-                            )
-                            Spacer(Modifier.height(4.dp))
-                            Text(
-                                text = superuserCount.toString(),
-                                style = MaterialTheme.typography.bodyMedium,
-                                color = MaterialTheme.colorScheme.outline
+                        Surface(
+                            color = MaterialTheme.colorScheme.primary.copy(alpha = 0.12f),
+                            shape = RoundedCornerShape(14.dp)
+                        ) {
+                            Icon(
+                                imageVector = Icons.Outlined.Security,
+                                contentDescription = null,
+                                modifier = Modifier.padding(10.dp).size(24.dp),
+                                tint = MaterialTheme.colorScheme.primary
                             )
                         }
+                        Spacer(Modifier.height(14.dp))
+                        Text(
+                            text = stringResource(R.string.superuser),
+                            style = MaterialTheme.typography.titleMedium,
+                            fontWeight = FontWeight.Bold,
+                            maxLines = 1,
+                            overflow = TextOverflow.Ellipsis
+                        )
+                        Text(
+                            text = if (superuserCount > 0) "$superuserCount Apps" else "0 Apps",
+                            style = MaterialTheme.typography.bodySmall,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.7f)
+                        )
                     }
                 }
                 
                 TonalCard(modifier = Modifier.weight(1f)) {
-                    Row(
+                    Column(
                         modifier = Modifier
                             .fillMaxWidth()
                             .clickable { navigator.navigate(BottomBarDestination.AModule.direction) }
-                            .padding(horizontal = 20.dp, vertical = 16.dp),
-                        verticalAlignment = Alignment.CenterVertically
+                            .padding(20.dp)
                     ) {
-                        Icon(
-                            imageVector = Icons.Outlined.Widgets,
-                            contentDescription = null,
-                            modifier = Modifier.size(20.dp),
-                            tint = MaterialTheme.colorScheme.onSurfaceVariant
-                        )
-                        Spacer(Modifier.width(16.dp))
-                        Column {
-                            Text(
-                                text = stringResource(R.string.module),
-                                style = MaterialTheme.typography.bodyLarge,
-                                maxLines = 1,
-                                overflow = TextOverflow.Ellipsis
-                            )
-                            Spacer(Modifier.height(4.dp))
-                            Text(
-                                text = moduleCount.toString(),
-                                style = MaterialTheme.typography.bodyMedium,
-                                color = MaterialTheme.colorScheme.outline
+                        Surface(
+                            color = MaterialTheme.colorScheme.secondary.copy(alpha = 0.12f),
+                            shape = RoundedCornerShape(14.dp)
+                        ) {
+                            Icon(
+                                imageVector = Icons.Outlined.Widgets,
+                                contentDescription = null,
+                                modifier = Modifier.padding(10.dp).size(24.dp),
+                                tint = MaterialTheme.colorScheme.secondary
                             )
                         }
+                        Spacer(Modifier.height(14.dp))
+                        Text(
+                            text = stringResource(R.string.module),
+                            style = MaterialTheme.typography.titleMedium,
+                            fontWeight = FontWeight.Bold,
+                            maxLines = 1,
+                            overflow = TextOverflow.Ellipsis
+                        )
+                        Text(
+                            text = if (moduleCount > 0) "$moduleCount Active" else "0 Modules",
+                            style = MaterialTheme.typography.bodySmall,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.7f)
+                        )
                     }
                 }
             }
         }
         
-        // System Patch Detection
         if (kpState != APApplication.State.UNKNOWN_STATE && apState != APApplication.State.ANDROIDPATCH_INSTALLED) {
              AStatusCardCircle(apState)
         }
 
-        // Info Card
         InfoCardCircle(kpState, apState)
 
-        // Learn More
         val hideApatchCard = APApplication.sharedPreferences.getBoolean("hide_apatch_card", false)
         if (!hideApatchCard) {
             LearnMoreCardCircle()
         }
         
-        Spacer(Modifier)
+        Spacer(Modifier.height(24.dp))
     }
 }
 
@@ -187,11 +191,16 @@ fun StatusCardCircle(
     val isUpdate = kpState == APApplication.State.KERNELPATCH_NEED_UPDATE || kpState == APApplication.State.KERNELPATCH_NEED_REBOOT
     val classicEmojiEnabled = BackgroundConfig.isListWorkingCardModeHidden
     
-    val containerColor = if (isWorking) MaterialTheme.colorScheme.primaryContainer else MaterialTheme.colorScheme.errorContainer
-
-    val finalContainerColor = if (isWorking) MaterialTheme.colorScheme.secondaryContainer else MaterialTheme.colorScheme.errorContainer
+    val finalContainerColor = if (isWorking) {
+        MaterialTheme.colorScheme.secondaryContainer
+    } else {
+        MaterialTheme.colorScheme.errorContainer
+    }
     
-    TonalCard(containerColor = finalContainerColor) {
+    TonalCard(
+        containerColor = finalContainerColor,
+        elevation = 1.dp 
+    ) {
         Row(
             modifier = Modifier
                 .fillMaxWidth()
@@ -210,7 +219,17 @@ fun StatusCardCircle(
             verticalAlignment = Alignment.CenterVertically
         ) {
             if (isWorking) {
-                 Icon(Icons.Outlined.CheckCircle, stringResource(R.string.home_working))
+                 Surface(
+                     shape = RoundedCornerShape(16.dp),
+                     color = MaterialTheme.colorScheme.onSecondaryContainer.copy(alpha = 0.12f)
+                 ) {
+                     Icon(
+                         Icons.Outlined.CheckCircle, 
+                         stringResource(R.string.home_working),
+                         modifier = Modifier.padding(12.dp).size(30.dp),
+                         tint = MaterialTheme.colorScheme.primary
+                     )
+                 }
                  Column(Modifier.padding(start = 20.dp)) {
                      val modeText = if (apState == APApplication.State.ANDROIDPATCH_INSTALLED) "FULL" else "HALF"
                      Row(verticalAlignment = Alignment.CenterVertically) {
@@ -220,37 +239,51 @@ fun StatusCardCircle(
                              } else {
                                  stringResource(R.string.home_working)
                              },
-                             style = MaterialTheme.typography.titleMedium
+                             style = MaterialTheme.typography.titleLarge,
+                             fontWeight = FontWeight.ExtraBold,
+                             letterSpacing = (-0.5).sp
                          )
-                         Spacer(Modifier.width(8.dp))
+                         Spacer(Modifier.width(10.dp))
                          
-                         // Full/Half Label
                         if (!classicEmojiEnabled) {
                             LabelText(label = modeText)
                         }
                     }
-                    Spacer(Modifier.height(4.dp))
+                    Spacer(Modifier.height(2.dp))
                     Text(
                         text = stringResource(R.string.home_version, getManagerVersion().second.toString()) +
                                 if (classicEmojiEnabled) " - $modeText" else "",
-                        style = MaterialTheme.typography.bodyMedium
+                        style = MaterialTheme.typography.bodyMedium,
+                        color = MaterialTheme.colorScheme.onSecondaryContainer.copy(alpha = 0.75f)
                     )
                 }
             } else {
-                 // Not installed or error
                  val icon = if (isUpdate) Icons.Outlined.SystemUpdate else Icons.Outlined.Warning
                  val title = if (isUpdate) stringResource(R.string.home_kp_need_update) else stringResource(R.string.home_not_installed)
                  
-                 Icon(icon, title)
+                 Surface(
+                     shape = RoundedCornerShape(16.dp),
+                     color = MaterialTheme.colorScheme.onErrorContainer.copy(alpha = 0.12f)
+                 ) {
+                     Icon(
+                         icon, 
+                         title,
+                         modifier = Modifier.padding(12.dp).size(30.dp),
+                         tint = MaterialTheme.colorScheme.error
+                     )
+                 }
                  Column(Modifier.padding(start = 20.dp)) {
                      Text(
                          text = title,
-                         style = MaterialTheme.typography.titleMedium
+                         style = MaterialTheme.typography.titleLarge,
+                         fontWeight = FontWeight.ExtraBold,
+                         letterSpacing = (-0.5).sp
                      )
-                     Spacer(Modifier.height(4.dp))
+                     Spacer(Modifier.height(2.dp))
                      Text(
                          text = stringResource(R.string.home_click_to_install),
-                         style = MaterialTheme.typography.bodyMedium
+                         style = MaterialTheme.typography.bodyMedium,
+                         color = MaterialTheme.colorScheme.onErrorContainer.copy(alpha = 0.75f)
                      )
                  }
             }
@@ -266,8 +299,16 @@ fun InfoCardCircle(kpState: APApplication.State, apState: APApplication.State) {
         Column(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(horizontal = 20.dp, vertical = 24.dp)
+                .padding(20.dp)
         ) {
+            Text(
+                text = "System Information",
+                style = MaterialTheme.typography.labelLarge,
+                color = MaterialTheme.colorScheme.primary,
+                fontWeight = FontWeight.Bold,
+                modifier = Modifier.padding(bottom = 16.dp, start = 4.dp)
+            )
+
             val uname = Os.uname()
             val prefs = APApplication.sharedPreferences
 
@@ -312,15 +353,36 @@ fun InfoCardCircle(kpState: APApplication.State, apState: APApplication.State) {
                 content: String,
                 icon: @Composable () -> Unit
             ) {
-                Row(verticalAlignment = Alignment.CenterVertically) {
-                    icon()
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(vertical = 10.dp),
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Box(
+                        modifier = Modifier
+                            .size(38.dp)
+                            .background(
+                                MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.5f),
+                                RoundedCornerShape(12.dp)
+                            ),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        icon()
+                    }
                     Spacer(Modifier.width(16.dp))
                     Column {
-                        Text(text = label, style = MaterialTheme.typography.bodyLarge)
+                        Text(
+                            text = label, 
+                            style = MaterialTheme.typography.bodyMedium,
+                            fontWeight = FontWeight.SemiBold
+                        )
                         Text(
                             text = content,
-                            style = MaterialTheme.typography.bodyMedium,
+                            style = MaterialTheme.typography.bodySmall,
                             color = MaterialTheme.colorScheme.outline,
+                            maxLines = 1,
+                            overflow = TextOverflow.Ellipsis
                         )
                     }
                 }
@@ -347,14 +409,12 @@ fun InfoCardCircle(kpState: APApplication.State, apState: APApplication.State) {
                 content = "${managerVersion.first} (${managerVersion.second})"
             )
 
-            Spacer(Modifier.height(16.dp))
             if (kpState != APApplication.State.UNKNOWN_STATE && !hideKpatchVersion) {
                 InfoCardItem(
                     icon = Icons.Outlined.Extension,
                     label = stringResource(R.string.home_kpatch_version),
                     content = Version.installedKPVString()
                 )
-                Spacer(Modifier.height(16.dp))
             }
 
             if (kpState != APApplication.State.UNKNOWN_STATE && !hideSuPath) {
@@ -363,7 +423,6 @@ fun InfoCardCircle(kpState: APApplication.State, apState: APApplication.State) {
                     label = stringResource(R.string.home_su_path),
                     content = Natives.suPath()
                 )
-                Spacer(Modifier.height(16.dp))
             }
 
             if (apState != APApplication.State.UNKNOWN_STATE && apState != APApplication.State.ANDROIDPATCH_NOT_INSTALLED) {
@@ -372,7 +431,6 @@ fun InfoCardCircle(kpState: APApplication.State, apState: APApplication.State) {
                     label = stringResource(R.string.home_apatch_version),
                     content = managerVersion.second.toString()
                 )
-                Spacer(Modifier.height(16.dp))
             }
 
             InfoCardItem(
@@ -381,28 +439,24 @@ fun InfoCardCircle(kpState: APApplication.State, apState: APApplication.State) {
                 content = getDeviceInfo()
             )
 
-            Spacer(Modifier.height(16.dp))
             InfoCardItem(
                 icon = Icons.Outlined.DeveloperBoard,
                 label = stringResource(R.string.home_kernel),
                 content = uname.release
             )
 
-            Spacer(Modifier.height(16.dp))
             InfoCardItem(
                 icon = Icons.Outlined.Info,
                 label = stringResource(R.string.home_system_version),
                 content = getSystemVersion()
             )
 
-            Spacer(Modifier.height(16.dp))
             if (!hideFingerprint) {
                 InfoCardItem(
                     icon = Icons.Outlined.Fingerprint,
                     label = stringResource(R.string.home_fingerprint),
                     content = Build.FINGERPRINT
                 )
-                Spacer(Modifier.height(16.dp))
             }
 
             if (kpState != APApplication.State.UNKNOWN_STATE && zygiskImplement != "None" && !hideZygisk) {
@@ -411,7 +465,6 @@ fun InfoCardCircle(kpState: APApplication.State, apState: APApplication.State) {
                     label = stringResource(R.string.home_zygisk_implement),
                     content = zygiskImplement
                 )
-                Spacer(Modifier.height(16.dp))
             }
 
             if (kpState != APApplication.State.UNKNOWN_STATE && mountImplement != "None" && !hideMount) {
@@ -420,7 +473,6 @@ fun InfoCardCircle(kpState: APApplication.State, apState: APApplication.State) {
                     label = stringResource(R.string.home_mount_implement),
                     content = mountImplement
                 )
-                Spacer(Modifier.height(16.dp))
             }
 
             InfoCardItem(
@@ -441,18 +493,19 @@ fun LabelText(
 ) {
     Box(
         modifier = modifier
-            .padding(end = 4.dp)
             .background(
-                color = containerColor,
-                shape = RoundedCornerShape(4.dp)
+                brush = Brush.horizontalGradient(
+                    colors = listOf(containerColor, containerColor.copy(alpha = 0.85f))
+                ),
+                shape = RoundedCornerShape(6.dp)
             )
     ) {
         Text(
             text = label,
-            modifier = Modifier.padding(vertical = 2.dp, horizontal = 5.dp),
+            modifier = Modifier.padding(vertical = 2.dp, horizontal = 8.dp),
             style = TextStyle(
                 fontSize = 10.sp,
-                fontWeight = FontWeight.SemiBold,
+                fontWeight = FontWeight.Bold,
                 color = color,
             )
         )
@@ -465,123 +518,78 @@ fun AStatusCardCircle(apState: APApplication.State) {
         Column(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(20.dp),
-            horizontalAlignment = Alignment.CenterHorizontally
+                .padding(20.dp)
         ) {
-            Text(
-                text = stringResource(R.string.android_patch),
-                style = MaterialTheme.typography.titleMedium
-            )
-            Spacer(Modifier.height(12.dp))
             Row(
                 modifier = Modifier.fillMaxWidth(),
-                verticalAlignment = Alignment.CenterVertically
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.SpaceBetween
             ) {
-                when (apState) {
-                    APApplication.State.ANDROIDPATCH_NOT_INSTALLED -> {
-                        Icon(Icons.Outlined.Block, stringResource(R.string.home_not_installed))
+                Row(verticalAlignment = Alignment.CenterVertically) {
+                    val statusIcon = when (apState) {
+                        APApplication.State.ANDROIDPATCH_NOT_INSTALLED -> Icons.Outlined.Block
+                        APApplication.State.ANDROIDPATCH_INSTALLING -> Icons.Outlined.InstallMobile
+                        APApplication.State.ANDROIDPATCH_INSTALLED -> Icons.Outlined.CheckCircle
+                        APApplication.State.ANDROIDPATCH_NEED_UPDATE -> Icons.Outlined.SystemUpdate
+                        else -> Icons.Outlined.Help
                     }
-
-                    APApplication.State.ANDROIDPATCH_INSTALLING -> {
-                        Icon(Icons.Outlined.InstallMobile, stringResource(R.string.home_installing))
-                    }
-
-                    APApplication.State.ANDROIDPATCH_INSTALLED -> {
-                        Icon(Icons.Outlined.CheckCircle, stringResource(R.string.home_working))
-                    }
-
-                    APApplication.State.ANDROIDPATCH_NEED_UPDATE -> {
-                        Icon(Icons.Outlined.SystemUpdate, stringResource(R.string.home_kp_need_update))
-                    }
-
-                    else -> {
-                        Icon(
-                            Icons.Outlined.Help,
-                            stringResource(R.string.home_install_unknown)
-                        )
-                    }
+                    
+                    Icon(
+                        statusIcon, 
+                        contentDescription = null,
+                        tint = MaterialTheme.colorScheme.primary,
+                        modifier = Modifier.size(26.dp)
+                    )
+                    Spacer(Modifier.width(12.dp))
+                    Text(
+                        text = stringResource(R.string.android_patch),
+                        style = MaterialTheme.typography.titleMedium,
+                        fontWeight = FontWeight.Bold
+                    )
                 }
-                Column(
-                    Modifier
-                        .weight(2f)
-                        .padding(start = 16.dp)
-                ) {
-                    when (apState) {
-                        APApplication.State.ANDROIDPATCH_NOT_INSTALLED -> {
-                            Text(
-                                text = stringResource(R.string.home_not_installed),
-                                style = MaterialTheme.typography.titleMedium
-                            )
-                        }
 
-                        APApplication.State.ANDROIDPATCH_INSTALLING -> {
-                            Text(
-                                text = stringResource(R.string.home_installing),
-                                style = MaterialTheme.typography.titleMedium
-                            )
-                        }
-
-                        APApplication.State.ANDROIDPATCH_INSTALLED -> {
-                            Text(
-                                text = stringResource(R.string.home_working),
-                                style = MaterialTheme.typography.titleMedium
-                            )
-                        }
-
-                        APApplication.State.ANDROIDPATCH_NEED_UPDATE -> {
-                            Text(
-                                text = stringResource(R.string.home_kp_need_update),
-                                style = MaterialTheme.typography.titleMedium
-                            )
-                        }
-
-                        else -> {
-                            Text(
-                                text = stringResource(R.string.home_install_unknown),
-                                style = MaterialTheme.typography.titleMedium
-                            )
-                        }
-                    }
-                }
                 if (apState != APApplication.State.UNKNOWN_STATE) {
-                    FilledTonalButton(onClick = {
-                        when (apState) {
-                            APApplication.State.ANDROIDPATCH_NOT_INSTALLED -> {
-                                APApplication.installApatch()
+                    Button(
+                        onClick = {
+                            when (apState) {
+                                APApplication.State.ANDROIDPATCH_NOT_INSTALLED -> APApplication.installApatch()
+                                APApplication.State.ANDROIDPATCH_UNINSTALLING -> {}
+                                APApplication.State.ANDROIDPATCH_NEED_UPDATE -> APApplication.installApatch()
+                                else -> APApplication.uninstallApatch()
                             }
-
-                            APApplication.State.ANDROIDPATCH_UNINSTALLING -> {
-                            }
-
-                            APApplication.State.ANDROIDPATCH_NEED_UPDATE -> {
-                                APApplication.installApatch()
-                            }
-
-                            else -> {
-                                APApplication.uninstallApatch()
-                            }
+                        },
+                        shape = RoundedCornerShape(12.dp),
+                        contentPadding = PaddingValues(horizontal = 16.dp),
+                        elevation = ButtonDefaults.buttonElevation(defaultElevation = 0.dp)
+                    ) {
+                        val btnText = when (apState) {
+                            APApplication.State.ANDROIDPATCH_NOT_INSTALLED -> stringResource(id = R.string.home_ap_cando_install)
+                            APApplication.State.ANDROIDPATCH_UNINSTALLING -> ""
+                            APApplication.State.ANDROIDPATCH_NEED_UPDATE -> stringResource(id = R.string.home_kp_cando_update)
+                            else -> stringResource(id = R.string.home_ap_cando_uninstall)
                         }
-                    }) {
-                        when (apState) {
-                            APApplication.State.ANDROIDPATCH_NOT_INSTALLED -> {
-                                Text(text = stringResource(id = R.string.home_ap_cando_install))
-                            }
-
-                            APApplication.State.ANDROIDPATCH_UNINSTALLING -> {
-                                Icon(Icons.Outlined.Cached, contentDescription = "busy")
-                            }
-
-                            APApplication.State.ANDROIDPATCH_NEED_UPDATE -> {
-                                Text(text = stringResource(id = R.string.home_kp_cando_update))
-                            }
-
-                            else -> {
-                                Text(text = stringResource(id = R.string.home_ap_cando_uninstall))
-                            }
+                        if (apState == APApplication.State.ANDROIDPATCH_UNINSTALLING) {
+                            Icon(Icons.Outlined.Cached, contentDescription = "busy", modifier = Modifier.size(20.dp))
+                        } else {
+                            Text(text = btnText, style = MaterialTheme.typography.labelLarge, fontWeight = FontWeight.Bold)
                         }
                     }
                 }
             }
+            
+            Spacer(Modifier.height(8.dp))
+            Text(
+                text = when (apState) {
+                    APApplication.State.ANDROIDPATCH_NOT_INSTALLED -> stringResource(R.string.home_not_installed)
+                    APApplication.State.ANDROIDPATCH_INSTALLING -> stringResource(R.string.home_installing)
+                    APApplication.State.ANDROIDPATCH_INSTALLED -> stringResource(R.string.home_working)
+                    APApplication.State.ANDROIDPATCH_NEED_UPDATE -> stringResource(R.string.home_kp_need_update)
+                    else -> stringResource(R.string.home_install_unknown)
+                },
+                style = MaterialTheme.typography.bodyMedium,
+                color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.8f),
+                modifier = Modifier.padding(start = 38.dp)
+            )
         }
     }
 }
@@ -590,12 +598,18 @@ fun AStatusCardCircle(apState: APApplication.State) {
 fun TonalCard(
     modifier: Modifier = Modifier,
     containerColor: Color = MaterialTheme.colorScheme.surfaceColorAtElevation(1.dp),
-    shape: Shape = RoundedCornerShape(20.dp),
+    elevation: androidx.compose.ui.unit.Dp = 0.dp,
+    shape: Shape = RoundedCornerShape(26.dp),
     content: @Composable () -> Unit
 ) {
     Card(
-        modifier = modifier,
+        modifier = modifier.border(
+            width = 0.5.dp,
+            color = MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.35f),
+            shape = shape
+        ),
         colors = CardDefaults.cardColors(containerColor = containerColor),
+        elevation = CardDefaults.cardElevation(defaultElevation = elevation),
         shape = shape
     ) {
         content()
@@ -606,26 +620,42 @@ fun TonalCard(
 fun LearnMoreCardCircle() {
     val uriHandler = LocalUriHandler.current
 
-    TonalCard {
+    TonalCard(
+        containerColor = MaterialTheme.colorScheme.tertiaryContainer.copy(alpha = 0.35f)
+    ) {
         Row(
             modifier = Modifier
                 .fillMaxWidth()
                 .clickable {
                     uriHandler.openUri("https://fp.mysqil.com/")
                 }
-                .padding(24.dp),
+                .padding(20.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
+            Box(
+                modifier = Modifier
+                    .size(42.dp)
+                    .background(MaterialTheme.colorScheme.tertiary, RoundedCornerShape(14.dp)),
+                contentAlignment = Alignment.Center
+            ) {
+                Icon(
+                    Icons.Outlined.Lightbulb, 
+                    null, 
+                    tint = MaterialTheme.colorScheme.onTertiary,
+                    modifier = Modifier.size(26.dp)
+                )
+            }
+            Spacer(Modifier.width(16.dp))
             Column {
                 Text(
                     text = stringResource(R.string.home_learn_apatch),
-                    style = MaterialTheme.typography.titleSmall
+                    style = MaterialTheme.typography.titleSmall,
+                    fontWeight = FontWeight.ExtraBold
                 )
-                Spacer(Modifier.height(4.dp))
                 Text(
                     text = stringResource(R.string.home_click_to_learn_apatch),
-                    style = MaterialTheme.typography.bodyMedium,
-                    color = MaterialTheme.colorScheme.outline
+                    style = MaterialTheme.typography.bodySmall,
+                    color = MaterialTheme.colorScheme.onTertiaryContainer.copy(alpha = 0.75f)
                 )
             }
         }
